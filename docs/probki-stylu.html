@@ -1,0 +1,744 @@
+<title>Próbki stylu drzewa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600&family=EB+Garamond:ital@0;1&family=Work+Sans:wght@400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&family=Jost:wght@300;400&display=swap">
+<style>
+/* Layout: jedna kolumna, każda próbka to para scen w proporcji ekranu iPada (3:4) */
+:root {
+  --bg: #eef0ec;
+  --fg: #23292a;
+  --muted: #5d6764;
+  --line: #cfd5cf;
+  --accent: #6a7f5f;
+  --card: #f7f8f5;
+  --f-ui: "Albert Sans", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161a1a; --fg: #e3e7e2; --muted: #9aa49f; --line: #2c3332; --accent: #a5bb98; --card: #1d2222;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161a1a; --fg: #e3e7e2; --muted: #9aa49f; --line: #2c3332; --accent: #a5bb98; --card: #1d2222;
+  color-scheme: dark;
+}
+html, body { background: var(--bg); color: var(--fg); }
+body {
+  font-family: var(--f-ui);
+  font-size: 16px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+header { display: flex; flex-direction: column; gap: 12px; max-width: 62ch; }
+.eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+h1 { font-weight: 300; font-size: clamp(30px, 5vw, 44px); line-height: 1.1; margin: 0; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); }
+.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+button {
+  font: inherit; font-size: 14px; color: var(--fg); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer;
+}
+button:hover { border-color: var(--accent); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.seed-note { font-size: 13px; color: var(--muted); }
+
+section.style { display: flex; flex-direction: column; gap: 16px; }
+.style-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.style-head h2 { margin: 0; font-weight: 500; font-size: 22px; }
+.style-head .letter { font-weight: 300; color: var(--accent); margin-right: 6px; }
+.style-head .sv { color: var(--muted); font-size: 14px; }
+.style-desc { margin: 0; max-width: 62ch; color: var(--muted); }
+.scenes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 620px) { .scenes { grid-template-columns: minmax(0, 1fr); } }
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.frame { position: relative; aspect-ratio: 3 / 4; max-width: 100%; border-radius: 6px; overflow: hidden; background: #ccc; }
+.frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+figcaption { font-size: 13px; color: var(--muted); }
+
+/* Teksty unoszące się nad sceną, jak w aplikacji */
+.overlay { position: absolute; left: 0; right: 0; top: 7%; padding: 0 9%; text-align: center; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.overlay .voice { font-size: clamp(15px, 2.3vw, 21px); line-height: 1.35; text-wrap: balance; }
+.overlay .small { font-size: clamp(11px, 1.4vw, 13px); opacity: 0.75; }
+.day .overlay { color: #2d2a26; }
+.night .overlay { color: #eef1f6; }
+
+.A .voice { font-family: "Albert Sans", sans-serif; font-weight: 300; }
+.A .small { font-family: "Albert Sans", sans-serif; letter-spacing: 0.04em; }
+.B .voice { font-family: "EB Garamond", Georgia, serif; font-style: italic; font-size: clamp(17px, 2.6vw, 24px); }
+.B .small { font-family: "Work Sans", sans-serif; }
+.C .voice { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; font-weight: 400; font-size: clamp(18px, 2.8vw, 26px); }
+.C .small { font-family: "Jost", sans-serif; font-weight: 300; letter-spacing: 0.06em; }
+
+footer { color: var(--muted); font-size: 14px; max-width: 62ch; border-top: 1px solid var(--line); padding-top: 20px; }
+footer p { margin: 0 0 8px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Mitt träd · etap 1 · próbki stylu</div>
+    <h1>Które drzewo jest Twoje?</h1>
+    <p>To samo przykładowe drzewo, narysowane w trzech stylach. Każdy styl pokazuje dwie sceny: jesienny dzień z rudzikiem i zimową noc ze śladami lisa na śniegu. Pod ziemią widać korzenie, tak jak ustaliliśmy.</p>
+    <div class="controls">
+      <button id="reseed" type="button">Inne przykładowe drzewo</button>
+      <span class="seed-note" id="seedNote"></span>
+    </div>
+  </header>
+
+  <section class="style A" data-style="paper">
+    <div class="style-head">
+      <h2><span class="letter">A</span>Wycinanka</h2>
+      <span class="sv">Pappersklipp</span>
+    </div>
+    <p class="style-desc">Płaskie warstwy jak wycięte z papieru, z delikatnym cieniem między nimi i ziarnem papieru. Ograniczona paleta, czyste kształty. Najbardziej skandynawski i graficzny.</p>
+    <div class="scenes">
+      <figure class="day"><div class="frame"><canvas data-scene="autumn"></canvas>
+        <div class="overlay"><div class="voice">En rödhake har satt sig på den lägsta grenen.</div></div></div>
+        <figcaption>Jesienny dzień</figcaption></figure>
+      <figure class="night"><div class="frame"><canvas data-scene="winter"></canvas>
+        <div class="overlay"><div class="voice">Vad var lite gott idag?</div><div class="small">Inga ord idag</div></div></div>
+        <figcaption>Zimowa noc</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="style B" data-style="ink">
+    <div class="style-head">
+      <h2><span class="letter">B</span>Tusz i akwarela</h2>
+      <span class="sv">Tusch och akvarell</span>
+    </div>
+    <p class="style-desc">Ręczna kreska tuszem i przenikające się plamy akwareli na papierze. Ciepło, jak strona ze szkicownika przyrodnika. Najbardziej osobisty i „pamiętnikowy”.</p>
+    <div class="scenes">
+      <figure class="day"><div class="frame"><canvas data-scene="autumn"></canvas>
+        <div class="overlay"><div class="voice">En rödhake har satt sig på den lägsta grenen.</div></div></div>
+        <figcaption>Jesienny dzień</figcaption></figure>
+      <figure class="night"><div class="frame"><canvas data-scene="winter"></canvas>
+        <div class="overlay"><div class="voice">Vad var lite gott idag?</div><div class="small">Inga ord idag</div></div></div>
+        <figcaption>Zimowa noc</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="style C" data-style="mist">
+    <div class="style-head">
+      <h2><span class="letter">C</span>Mgła i światło</h2>
+      <span class="sv">Dimma och ljus</span>
+    </div>
+    <p class="style-desc">Miękkie przejścia, głębia z warstw lasu ginących we mgle, światło i poświata. Korzenie lekko świecą pod ziemią. Najbardziej nastrojowy i filmowy.</p>
+    <div class="scenes">
+      <figure class="day"><div class="frame"><canvas data-scene="autumn"></canvas>
+        <div class="overlay"><div class="voice">En rödhake har satt sig på den lägsta grenen.</div></div></div>
+        <figcaption>Jesienny dzień</figcaption></figure>
+      <figure class="night"><div class="frame"><canvas data-scene="winter"></canvas>
+        <div class="overlay"><div class="voice">Vad var lite gott idag?</div><div class="small">Inga ord idag</div></div></div>
+        <figcaption>Zimowa noc</figcaption></figure>
+    </div>
+  </section>
+
+  <footer>
+    <p>To przykładowe drzewo z innymi genami niż Twoje. Twoje nasionko powstanie dopiero w dniu startu.</p>
+    <p>Drzewo jest na etapie „młode drzewo” (ok. 30 dni). W pierwszym roku drzewo jest chronione: jesienią liście tylko się przebarwiają, a zimą zostają, ciemniejsze i oszronione. Teksty na scenach są tymczasowe. Możesz też wybrać mieszankę, np. „B, ale z mgłą z C”.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Losowość z ziarnem ----------
+  function rng(seed) {
+    var s = seed >>> 0;
+    return function () {
+      s = (s + 0x6D2B79F5) | 0;
+      var t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // ---------- Geometria drzewa (wspólna dla wszystkich stylów) ----------
+  // Jednostka: wysokość sceny. Początek: podstawa pnia, oś y w górę ujemna.
+  function makeTree(seed) {
+    var r = rng(seed);
+    var g = {
+      spread: 0.32 + r() * 0.3,
+      lean: (r() - 0.5) * 0.14,
+      shrink: 0.73 + r() * 0.07,
+      leafLen: 0.011 + r() * 0.006,
+      leafWide: 0.32 + r() * 0.28,
+      droop: (r() - 0.5) * 0.5,
+      depth: 6,
+      tilt: r() < 0.5 ? -1 : 1
+    };
+    var branches = [], leaves = [], roots = [];
+
+    function addLeaf(x, y, a) {
+      leaves.push({ x: x, y: y, a: a, len: g.leafLen * (0.75 + r() * 0.5), wide: g.leafWide, tone: r(), side: r() });
+    }
+
+    function grow(x, y, a, len, w, d) {
+      var bend = (r() - 0.5) * 0.35;
+      var x2 = x + Math.sin(a) * len, y2 = y - Math.cos(a) * len;
+      var cx = x + Math.sin(a + bend) * len * 0.5, cy = y - Math.cos(a + bend) * len * 0.5;
+      branches.push({ x: x, y: y, cx: cx, cy: cy, x2: x2, y2: y2, w: w, a: a, d: d });
+      if (d >= g.depth) {
+        var n = 5 + Math.floor(r() * 4);
+        for (var i = 0; i < n; i++) addLeaf(x2 + (r() - 0.5) * 0.02, y2 + (r() - 0.5) * 0.02, a + (r() - 0.5) * 2.6);
+        return;
+      }
+      if (d >= g.depth - 2) {
+        for (var k = 0; k < 2; k++) {
+          var t = 0.4 + r() * 0.5;
+          addLeaf(x + (x2 - x) * t, y + (y2 - y) * t, a + (r() < 0.5 ? -1 : 1) * (0.6 + r() * 0.9));
+        }
+      }
+      var kids = d < 2 ? 2 : (r() < 0.28 ? 3 : 2);
+      for (var j = 0; j < kids; j++) {
+        var off = kids === 1 ? 0 : (j / (kids - 1) - 0.5) * 2;
+        var asym = j === 0 ? 0.55 : 1.15;
+        var na = a + off * g.spread * asym * g.tilt + g.lean * 0.3 + g.droop * (d / g.depth) * Math.sign(Math.sin(a) || 1) * 0.4 + (r() - 0.5) * 0.25;
+        grow(x2, y2, na, len * (g.shrink + (r() - 0.5) * 0.12), w * 0.68, d + 1);
+      }
+    }
+    grow(0, 0, g.lean, 0.125, 0.015, 0);
+
+    function root(x, y, a, len, w, d) {
+      var x2 = x + Math.sin(a) * len, y2 = y + Math.cos(a) * len;
+      var cx = x + Math.sin(a + (r() - 0.5) * 0.6) * len * 0.5, cy = y + Math.cos(a) * len * 0.5;
+      roots.push({ x: x, y: y, cx: cx, cy: cy, x2: x2, y2: y2, w: w, d: d });
+      if (d >= 3) return;
+      var kids = 2;
+      for (var j = 0; j < kids; j++) {
+        root(x2, y2, a + (j === 0 ? -1 : 1) * (0.35 + r() * 0.5), len * (0.62 + r() * 0.15), w * 0.6, d + 1);
+      }
+    }
+    var mains = 5;
+    for (var m = 0; m < mains; m++) {
+      var ang = -1.25 + (m / (mains - 1)) * 2.5 + (r() - 0.5) * 0.25;
+      root(0, 0.002, ang, 0.045 + r() * 0.03, 0.006, 0);
+    }
+    return { g: g, branches: branches, leaves: leaves, roots: roots };
+  }
+
+  // ---------- Pomocnicze ----------
+  function hillFn(W, yBase, amp, freq, seed) {
+    var r = rng(seed), p1 = r() * 6, p2 = r() * 6, p3 = r() * 6;
+    return function (x) {
+      return yBase + amp * (Math.sin(x * freq + p1) * 0.6 + Math.sin(x * freq * 2.3 + p2) * 0.3 + Math.sin(x * freq * 5.1 + p3) * 0.1);
+    };
+  }
+  function hillPath(ctx, W, H, fn) {
+    ctx.beginPath(); ctx.moveTo(0, H);
+    for (var x = 0; x <= W + 4; x += 4) ctx.lineTo(x, fn(x));
+    ctx.lineTo(W, H); ctx.closePath();
+  }
+  function spruce(ctx, x, y, h) {
+    var w = h * 0.34;
+    ctx.beginPath();
+    ctx.moveTo(x, y - h);
+    for (var i = 1; i <= 4; i++) {
+      var yy = y - h + (h * i) / 4.4, ww = (w * i) / 4;
+      ctx.lineTo(x + ww, yy); ctx.lineTo(x + ww * 0.45, yy);
+    }
+    ctx.lineTo(x + w * 0.12, y); ctx.lineTo(x - w * 0.12, y);
+    for (var k = 4; k >= 1; k--) {
+      var y2 = y - h + (h * k) / 4.4, w2 = (w * k) / 4;
+      ctx.lineTo(x - w2 * 0.45, y2); ctx.lineTo(x - w2, y2);
+    }
+    ctx.closePath();
+  }
+  function leafPath(ctx, x, y, a, len, wide) {
+    var tx = x + Math.sin(a) * len, ty = y - Math.cos(a) * len;
+    var nx = Math.cos(a) * len * wide, ny = Math.sin(a) * len * wide;
+    var mx = (x + tx) / 2, my = (y + ty) / 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(mx + nx, my + ny, tx, ty);
+    ctx.quadraticCurveTo(mx - nx, my - ny, x, y);
+    ctx.closePath();
+  }
+  function lerpColor(a, b, t) {
+    var pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
+    var r1 = (pa >> 16) & 255, g1 = (pa >> 8) & 255, b1 = pa & 255;
+    var r2 = (pb >> 16) & 255, g2 = (pb >> 8) & 255, b2 = pb & 255;
+    return "rgb(" + Math.round(r1 + (r2 - r1) * t) + "," + Math.round(g1 + (g2 - g1) * t) + "," + Math.round(b1 + (b2 - b1) * t) + ")";
+  }
+  function rgba(hex, a) {
+    var p = parseInt(hex.slice(1), 16);
+    return "rgba(" + ((p >> 16) & 255) + "," + ((p >> 8) & 255) + "," + (p & 255) + "," + a + ")";
+  }
+  function pick(arr, t) { return arr[Math.min(arr.length - 1, Math.floor(t * arr.length))]; }
+
+  var grain = null;
+  function grainPattern(ctx) {
+    if (!grain) {
+      grain = document.createElement("canvas");
+      grain.width = grain.height = 160;
+      var g = grain.getContext("2d"), img = g.createImageData(160, 160), r = rng(7);
+      for (var i = 0; i < img.data.length; i += 4) {
+        var v = r() * 255;
+        img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+        img.data[i + 3] = r() * 40;
+      }
+      g.putImageData(img, 0, 0);
+    }
+    return ctx.createPattern(grain, "repeat");
+  }
+
+  // Punkt drzewa -> piksele
+  function mapper(gx, gy, H) {
+    return function (x, y) { return [gx + x * H, gy + y * H]; };
+  }
+
+  function robinAnchor(tree) {
+    var best = null;
+    tree.branches.forEach(function (b) {
+      if (b.d === 2 && (!best || b.y2 > best.y2)) best = b;
+    });
+    return best;
+  }
+
+  function drawRobin(ctx, x, y, s, style) {
+    ctx.save();
+    ctx.translate(x, y);
+    var body = style === "ink" ? "#6b5a4a" : (style === "mist" ? "#5b5048" : "#6e5a48");
+    var breast = style === "mist" ? "#d9824a" : "#d2733a";
+    // ogon
+    ctx.fillStyle = body;
+    ctx.beginPath(); ctx.moveTo(-s * 0.9, -s * 0.5); ctx.lineTo(-s * 1.7, -s * 0.1); ctx.lineTo(-s * 1.5, -s * 0.75); ctx.closePath(); ctx.fill();
+    // tułów
+    ctx.beginPath(); ctx.ellipse(-s * 0.2, -s * 0.75, s * 0.95, s * 0.7, -0.15, 0, Math.PI * 2); ctx.fill();
+    // głowa
+    ctx.beginPath(); ctx.arc(s * 0.55, -s * 1.3, s * 0.5, 0, Math.PI * 2); ctx.fill();
+    // pierś
+    ctx.fillStyle = breast;
+    ctx.beginPath(); ctx.ellipse(s * 0.35, -s * 0.85, s * 0.48, s * 0.55, 0.2, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(s * 0.62, -s * 1.2, s * 0.32, 0, Math.PI * 2); ctx.fill();
+    // dziób i oko
+    ctx.fillStyle = "#2a2420";
+    ctx.beginPath(); ctx.moveTo(s * 1.0, -s * 1.35); ctx.lineTo(s * 1.32, -s * 1.28); ctx.lineTo(s * 1.0, -s * 1.2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(s * 0.7, -s * 1.42, s * 0.08, 0, Math.PI * 2); ctx.fill();
+    // nóżki
+    ctx.strokeStyle = "#3a302a"; ctx.lineWidth = Math.max(0.8, s * 0.08);
+    ctx.beginPath(); ctx.moveTo(-s * 0.1, -s * 0.1); ctx.lineTo(-s * 0.15, s * 0.05); ctx.moveTo(s * 0.2, -s * 0.12); ctx.lineTo(s * 0.2, s * 0.05); ctx.stroke();
+    if (style === "ink") {
+      ctx.strokeStyle = "rgba(40,32,28,0.85)"; ctx.lineWidth = Math.max(0.7, s * 0.07);
+      ctx.beginPath(); ctx.ellipse(-s * 0.2, -s * 0.75, s * 0.95, s * 0.7, -0.15, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(s * 0.55, -s * 1.3, s * 0.5, 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function footprints(ctx, W, H, gy, color, seed) {
+    var r = rng(seed);
+    ctx.fillStyle = color;
+    var x = W * 0.06, y = gy + H * 0.035;
+    for (var i = 0; i < 16; i++) {
+      x += W * 0.028 + r() * W * 0.006;
+      y += (r() - 0.55) * H * 0.004;
+      var off = (i % 2 ? 1 : -1) * H * 0.004;
+      ctx.beginPath(); ctx.ellipse(x, y + off, H * 0.0035, H * 0.0024, 0, 0, Math.PI * 2); ctx.fill();
+      if (x > W * 0.33) break;
+    }
+  }
+
+  // ---------- Paleta scen ----------
+  var PAL = {
+    paper: {
+      autumn: {
+        sky: "#d6ddd8", sky2: "#e6e3d9", sun: "#f1d7a3",
+        far: "#b8c2b6", mid: "#98a490", spruce: "#6b7a68", field: "#b9965e",
+        ground: "#a47f4f", soil: "#6a4d37", soil2: "#4f3a2b", root: "#c8a57d", stone: "#8a7a6a",
+        trunk: "#46372d", leaves: ["#7d8a46", "#9a9a43", "#c08a3a", "#b5582e", "#8e3e2c"]
+      },
+      winter: {
+        sky: "#1d2741", sky2: "#2c3a5a", moon: "#efe7d2",
+        far: "#8d9bb8", mid: "#b7c3d8", spruce: "#1f2a42", field: "#cfd8e6",
+        ground: "#e1e8f1", soil: "#2f2721", soil2: "#211b17", root: "#8a7560", stone: "#4a4038",
+        trunk: "#2a221d", leaves: ["#3d4a36", "#4b3c35", "#563f3a", "#36433a"], frost: "#e9eef6", snow: "#eef3f9"
+      }
+    }
+  };
+  PAL.ink = PAL.paper; PAL.mist = PAL.paper;
+
+  // ---------- Styl A: wycinanka ----------
+  function drawPaper(ctx, W, H, scene, tree, seedBase) {
+    var p = PAL.paper[scene], night = scene === "winter";
+    var gy = H * 0.66, gx = W * 0.5, M = mapper(gx, gy, H);
+    function layer(fill, fn) {
+      ctx.save(); ctx.shadowColor = night ? "rgba(0,0,0,0.35)" : "rgba(60,40,20,0.18)";
+      ctx.shadowBlur = H * 0.012; ctx.shadowOffsetY = H * 0.004;
+      ctx.fillStyle = fill; fn(); ctx.fill(); ctx.restore();
+    }
+    // niebo w pasach
+    var bands = 5;
+    for (var i = 0; i < bands; i++) {
+      ctx.fillStyle = lerpColor(p.sky, p.sky2, i / (bands - 1));
+      ctx.fillRect(0, (gy * i) / bands, W, gy / bands + 1);
+    }
+    if (night) {
+      var rs = rng(seedBase + 3);
+      ctx.fillStyle = "#f4efe2";
+      for (var s = 0; s < 70; s++) { ctx.beginPath(); ctx.arc(rs() * W, rs() * gy * 0.75, rs() * 1.3 + 0.4, 0, Math.PI * 2); ctx.fill(); }
+      layer(p.moon, function () { ctx.beginPath(); ctx.arc(W * 0.78, H * 0.2, H * 0.045, 0, Math.PI * 2); });
+    } else {
+      layer(p.sun, function () { ctx.beginPath(); ctx.arc(W * 0.24, H * 0.25, H * 0.06, 0, Math.PI * 2); });
+      layer("#eef0ea", function () { ctx.beginPath(); ctx.ellipse(W * 0.7, H * 0.3, W * 0.16, H * 0.022, 0, 0, Math.PI * 2); });
+    }
+    var far = hillFn(W, gy - H * 0.13, H * 0.03, 0.012, 11);
+    layer(p.far, function () { hillPath(ctx, W, H, far); });
+    var mid = hillFn(W, gy - H * 0.07, H * 0.022, 0.017, 12);
+    layer(p.mid, function () { hillPath(ctx, W, H, mid); });
+    var rt = rng(21);
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.2)"; ctx.shadowBlur = H * 0.008; ctx.fillStyle = p.spruce;
+    for (var t = 0; t < 26; t++) {
+      var tx = rt() * W; if (Math.abs(tx - gx) < W * 0.12) continue;
+      spruce(ctx, tx, mid(tx) + H * 0.01, H * (0.04 + rt() * 0.05)); ctx.fill();
+    }
+    ctx.restore();
+    var field = hillFn(W, gy - H * 0.025, H * 0.008, 0.02, 13);
+    layer(p.field, function () { hillPath(ctx, W, H, field); });
+    // ziemia (przekrój)
+    var ground = hillFn(W, gy, H * 0.004, 0.01, 14);
+    layer(p.soil, function () { hillPath(ctx, W, H, ground); });
+    ctx.fillStyle = p.soil2;
+    ctx.beginPath(); hillPath(ctx, W, H, hillFn(W, gy + H * 0.17, H * 0.01, 0.02, 15)); ctx.fill();
+    var rsx = rng(31);
+    ctx.fillStyle = p.stone;
+    for (var st = 0; st < 14; st++) { ctx.beginPath(); ctx.ellipse(rsx() * W, gy + H * (0.06 + rsx() * 0.28), H * (0.006 + rsx() * 0.01), H * (0.004 + rsx() * 0.006), rsx(), 0, Math.PI * 2); ctx.fill(); }
+    // korzenie
+    ctx.strokeStyle = p.root; ctx.lineCap = "round";
+    tree.roots.forEach(function (b) {
+      var a = M(b.x, b.y), c = M(b.cx, b.cy), e = M(b.x2, b.y2);
+      ctx.lineWidth = Math.max(1, b.w * H); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(c[0], c[1], e[0], e[1]); ctx.stroke();
+    });
+    // pas powierzchni
+    layer(night ? p.ground : p.ground, function () {
+      ctx.beginPath(); ctx.moveTo(0, ground(0));
+      for (var x = 0; x <= W + 4; x += 4) ctx.lineTo(x, ground(x));
+      for (var x2 = W; x2 >= -4; x2 -= 4) ctx.lineTo(x2, ground(x2) + H * 0.016);
+      ctx.closePath();
+    });
+    if (night) footprints(ctx, W, H, gy - H * 0.028, "rgba(120,140,170,0.55)", 41);
+    else {
+      var rl = rng(51);
+      for (var fl = 0; fl < 40; fl++) {
+        var lx = rl() * W, ly = ground(lx) + rl() * H * 0.012 - H * 0.004;
+        ctx.fillStyle = pick(p.leaves.slice(2), rl());
+        leafPath(ctx, lx, ly, 1.2 + rl() * 0.8, H * 0.012, 0.4); ctx.fill();
+      }
+    }
+    // drzewo
+    ctx.save(); ctx.shadowColor = night ? "rgba(0,0,0,0.4)" : "rgba(60,40,20,0.22)"; ctx.shadowBlur = H * 0.01; ctx.shadowOffsetY = H * 0.004;
+    ctx.strokeStyle = p.trunk; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    tree.branches.forEach(function (b) {
+      var a = M(b.x, b.y), c = M(b.cx, b.cy), e = M(b.x2, b.y2);
+      ctx.lineWidth = Math.max(1, b.w * H); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(c[0], c[1], e[0], e[1]); ctx.stroke();
+    });
+    ctx.restore();
+    if (night) {
+      ctx.strokeStyle = p.snow; ctx.lineCap = "round";
+      tree.branches.forEach(function (b) {
+        if (b.d > 4 || Math.abs(Math.sin(b.a)) < 0.35) return;
+        var a = M(b.x, b.y), e = M(b.x2, b.y2);
+        ctx.lineWidth = Math.max(1, b.w * H * 0.55);
+        ctx.beginPath(); ctx.moveTo(a[0], a[1] - b.w * H * 0.5); ctx.lineTo(a[0] + (e[0] - a[0]) * 0.7, a[1] + (e[1] - a[1]) * 0.7 - b.w * H * 0.45); ctx.stroke();
+      });
+    }
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.18)"; ctx.shadowBlur = H * 0.004; ctx.shadowOffsetY = H * 0.002;
+    tree.leaves.forEach(function (l) {
+      var q = M(l.x, l.y);
+      var tone = night ? pick(p.leaves, l.tone) : pick(p.leaves, Math.min(0.999, l.tone * 0.75 + l.side * 0.3));
+      ctx.fillStyle = tone; leafPath(ctx, q[0], q[1], l.a, l.len * H, l.wide); ctx.fill();
+    });
+    ctx.restore();
+    if (night) {
+      ctx.strokeStyle = p.frost; ctx.lineWidth = 0.8;
+      tree.leaves.forEach(function (l) {
+        if (l.side < 0.45) return;
+        var q = M(l.x, l.y); leafPath(ctx, q[0], q[1], l.a, l.len * H, l.wide); ctx.stroke();
+      });
+      var rf = rng(61); ctx.fillStyle = "rgba(240,245,252,0.85)";
+      for (var f = 0; f < 90; f++) { ctx.beginPath(); ctx.arc(rf() * W, rf() * gy, rf() * 1.4 + 0.5, 0, Math.PI * 2); ctx.fill(); }
+    } else {
+      var rb = robinAnchor(tree); if (rb) { var pt = M(rb.x2, rb.y2); drawRobin(ctx, pt[0], pt[1], H * 0.011, "paper"); }
+    }
+    ctx.fillStyle = grainPattern(ctx); ctx.globalAlpha = 0.5; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  }
+
+  // ---------- Styl B: tusz i akwarela ----------
+  function wash(ctx, x, y, rx, ry, color, alpha, seed) {
+    var r = rng(seed);
+    for (var i = 0; i < 4; i++) {
+      var ox = (r() - 0.5) * rx * 0.3, oy = (r() - 0.5) * ry * 0.3;
+      var g = ctx.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, Math.max(rx, ry));
+      g.addColorStop(0, rgba(color, alpha)); g.addColorStop(0.7, rgba(color, alpha * 0.8)); g.addColorStop(1, rgba(color, 0));
+      ctx.save(); ctx.translate(x + ox, y + oy); ctx.scale(1, ry / Math.max(rx, ry)); ctx.translate(-(x + ox), -(y + oy));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x + ox, y + oy, Math.max(rx, ry), 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    }
+  }
+  function washShape(ctx, pathFn, color, alpha, jitter, seed) {
+    var r = rng(seed);
+    for (var i = 0; i < 3; i++) {
+      ctx.save(); ctx.translate((r() - 0.5) * jitter, (r() - 0.5) * jitter);
+      ctx.fillStyle = rgba(color, alpha); pathFn(); ctx.fill(); ctx.restore();
+    }
+  }
+  function inkLine(ctx, pts, w, color, seed) {
+    var r = rng(seed);
+    ctx.strokeStyle = color; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    for (var k = 0; k < 2; k++) {
+      ctx.lineWidth = k === 0 ? w : Math.max(0.5, w * 0.35);
+      ctx.beginPath();
+      pts.forEach(function (p, i) { var jx = (r() - 0.5) * 1.2, jy = (r() - 0.5) * 1.2; if (i === 0) ctx.moveTo(p[0] + jx, p[1] + jy); else ctx.lineTo(p[0] + jx, p[1] + jy); });
+      ctx.stroke();
+    }
+  }
+  function drawInk(ctx, W, H, scene, tree, seedBase) {
+    var night = scene === "winter";
+    var gy = H * 0.66, gx = W * 0.5, M = mapper(gx, gy, H);
+    var paper = "#f4efe5", ink = "#2b2521";
+    ctx.fillStyle = paper; ctx.fillRect(0, 0, W, H);
+    if (night) {
+      wash(ctx, W * 0.5, H * 0.18, W * 0.9, H * 0.35, "#27365c", 0.55, 1);
+      wash(ctx, W * 0.2, H * 0.4, W * 0.6, H * 0.25, "#3b4a72", 0.35, 2);
+      wash(ctx, W * 0.85, H * 0.42, W * 0.5, H * 0.25, "#2f3d63", 0.35, 3);
+      // księżyc: niezamalowany papier
+      var mx = W * 0.76, my = H * 0.19, mr = H * 0.042;
+      var halo = ctx.createRadialGradient(mx, my, mr, mx, my, mr * 3.2);
+      halo.addColorStop(0, "rgba(244,239,229,0.55)"); halo.addColorStop(1, "rgba(244,239,229,0)");
+      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(mx, my, mr * 3.2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = paper; ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "rgba(43,37,33,0.35)"; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(mx + 0.5, my, mr, 0.3, 4.4); ctx.stroke();
+      var rs = rng(seedBase + 5); ctx.fillStyle = "rgba(255,255,255,0.85)";
+      for (var s = 0; s < 55; s++) { ctx.beginPath(); ctx.arc(rs() * W, rs() * gy * 0.7, rs() * 1.2 + 0.4, 0, Math.PI * 2); ctx.fill(); }
+    } else {
+      wash(ctx, W * 0.25, H * 0.25, W * 0.35, H * 0.18, "#f0c77d", 0.35, 4);
+      wash(ctx, W * 0.7, H * 0.15, W * 0.6, H * 0.2, "#a9bccb", 0.3, 5);
+      wash(ctx, W * 0.5, H * 0.45, W * 0.8, H * 0.15, "#d8cdb5", 0.3, 6);
+    }
+    var far = hillFn(W, gy - H * 0.13, H * 0.03, 0.012, 11);
+    washShape(ctx, function () { hillPath(ctx, W, H, far); }, night ? "#5b6a8e" : "#a8b6a5", night ? 0.35 : 0.3, H * 0.01, 7);
+    var mid = hillFn(W, gy - H * 0.07, H * 0.022, 0.017, 12);
+    washShape(ctx, function () { hillPath(ctx, W, H, mid); }, night ? "#c5cfdf" : "#8f9c7c", night ? 0.45 : 0.35, H * 0.008, 8);
+    var rt = rng(21);
+    for (var t = 0; t < 26; t++) {
+      var tx = rt() * W; if (Math.abs(tx - gx) < W * 0.12) { rt(); continue; }
+      var th = H * (0.04 + rt() * 0.05);
+      ctx.fillStyle = night ? "rgba(35,45,70,0.55)" : "rgba(70,90,70,0.45)"; spruce(ctx, tx, mid(tx) + H * 0.01, th); ctx.fill();
+      ctx.strokeStyle = "rgba(43,37,33,0.6)"; ctx.lineWidth = 0.6; ctx.stroke();
+    }
+    var inkPts = []; for (var x = 0; x <= W; x += 8) inkPts.push([x, mid(x)]);
+    inkLine(ctx, inkPts.slice(0, Math.floor(inkPts.length * 0.4)), 0.9, "rgba(43,37,33,0.7)", 9);
+    var ground = hillFn(W, gy, H * 0.004, 0.01, 14);
+    if (night) {
+      washShape(ctx, function () { hillPath(ctx, W, H, hillFn(W, gy - H * 0.025, H * 0.008, 0.02, 13)); }, "#9fb0cc", 0.18, H * 0.01, 10);
+    } else {
+      washShape(ctx, function () { hillPath(ctx, W, H, hillFn(W, gy - H * 0.025, H * 0.008, 0.02, 13)); }, "#c79a52", 0.3, H * 0.01, 10);
+    }
+    // ziemia
+    washShape(ctx, function () { hillPath(ctx, W, H, ground); }, night ? "#3a3030" : "#7a5a3e", night ? 0.55 : 0.5, H * 0.006, 12);
+    washShape(ctx, function () { hillPath(ctx, W, H, hillFn(W, gy + H * 0.17, H * 0.01, 0.02, 15)); }, "#3c2c22", 0.3, H * 0.01, 13);
+    var gp = []; for (var x3 = 0; x3 <= W; x3 += 6) gp.push([x3, ground(x3)]);
+    inkLine(ctx, gp, 1.1, ink, 14);
+    if (night) {
+      ctx.fillStyle = "#eef2f7";
+      ctx.beginPath(); ctx.moveTo(0, ground(0)); for (var x4 = 0; x4 <= W + 4; x4 += 4) ctx.lineTo(x4, ground(x4) - H * 0.003);
+      for (var x5 = W; x5 >= -4; x5 -= 4) ctx.lineTo(x5, ground(x5) - H * 0.02); ctx.closePath(); ctx.fill();
+      footprints(ctx, W, H, gy - H * 0.031, "rgba(90,110,150,0.6)", 41);
+    }
+    var rsx = rng(31);
+    for (var st = 0; st < 14; st++) {
+      var sx = rsx() * W, sy = gy + H * (0.06 + rsx() * 0.28), sr = H * (0.006 + rsx() * 0.01), sr2 = H * (0.004 + rsx() * 0.006), ro = rsx();
+      ctx.strokeStyle = "rgba(43,37,33,0.55)"; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.ellipse(sx, sy, sr, sr2, ro, 0, Math.PI * 2); ctx.stroke();
+    }
+    tree.roots.forEach(function (b, i) {
+      var a = M(b.x, b.y), c = M(b.cx, b.cy), e = M(b.x2, b.y2);
+      inkLine(ctx, [a, [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2], c, [(c[0] + e[0]) / 2, (c[1] + e[1]) / 2], e], Math.max(0.6, b.w * H * 0.8), night ? "#d9cbb6" : ink, 100 + i);
+    });
+    // drzewo
+    tree.branches.forEach(function (b, i) {
+      var a = M(b.x, b.y), c = M(b.cx, b.cy), e = M(b.x2, b.y2);
+      if (b.d < 3) { ctx.strokeStyle = rgba("#6b5544", 0.35); ctx.lineWidth = b.w * H * 1.6; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(a[0] + 2, a[1]); ctx.quadraticCurveTo(c[0] + 2, c[1], e[0] + 2, e[1]); ctx.stroke(); }
+      inkLine(ctx, [a, [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2], c, [(c[0] + e[0]) / 2, (c[1] + e[1]) / 2], e], Math.max(0.7, b.w * H * 0.75), ink, 200 + i);
+    });
+    var leafCols = night ? ["#3e4d3b", "#5a4440", "#47503e"] : ["#7f8f45", "#a39a3e", "#c98a35", "#b85a30"];
+    tree.leaves.forEach(function (l, i) {
+      var q = M(l.x, l.y);
+      var col = night ? pick(leafCols, l.tone) : pick(leafCols, Math.min(0.999, l.tone * 0.75 + l.side * 0.3));
+      ctx.save(); ctx.translate(H * 0.002, H * 0.002);
+      ctx.fillStyle = col.indexOf("#") === 0 ? rgba(col, 0.6) : col; leafPath(ctx, q[0], q[1], l.a, l.len * H * 1.1, l.wide * 1.1); ctx.fill(); ctx.restore();
+      if (l.side > 0.55) { ctx.strokeStyle = "rgba(43,37,33,0.8)"; ctx.lineWidth = 0.6; leafPath(ctx, q[0], q[1], l.a, l.len * H, l.wide); ctx.stroke(); }
+    });
+    if (night) {
+      var rf = rng(61); ctx.fillStyle = "rgba(255,255,255,0.9)";
+      tree.leaves.forEach(function (l) { if (rf() < 0.5) return; var q = M(l.x, l.y); ctx.beginPath(); ctx.arc(q[0] + (rf() - 0.5) * 4, q[1] - 2, 0.9, 0, Math.PI * 2); ctx.fill(); });
+      for (var f = 0; f < 70; f++) { ctx.beginPath(); ctx.arc(rf() * W, rf() * gy, rf() * 1.5 + 0.5, 0, Math.PI * 2); ctx.fill(); }
+      ctx.strokeStyle = "#f4f6fa"; ctx.lineCap = "round";
+      tree.branches.forEach(function (b) {
+        if (b.d > 4 || Math.abs(Math.sin(b.a)) < 0.35) return;
+        var a = M(b.x, b.y), e = M(b.x2, b.y2);
+        ctx.lineWidth = Math.max(1, b.w * H * 0.5);
+        ctx.beginPath(); ctx.moveTo(a[0], a[1] - b.w * H * 0.6); ctx.lineTo(a[0] + (e[0] - a[0]) * 0.6, a[1] + (e[1] - a[1]) * 0.6 - b.w * H * 0.5); ctx.stroke();
+      });
+    } else {
+      var rl = rng(51);
+      for (var fl = 0; fl < 30; fl++) {
+        var lx = rl() * W, ly = ground(lx) - rl() * H * 0.006;
+        ctx.fillStyle = rgba(pick(["#c98a35", "#b85a30", "#a39a3e"], rl()), 0.6);
+        leafPath(ctx, lx, ly, 1.2 + rl() * 0.8, H * 0.012, 0.4); ctx.fill();
+      }
+      var rb = robinAnchor(tree); if (rb) { var pt = M(rb.x2, rb.y2); drawRobin(ctx, pt[0], pt[1], H * 0.011, "ink"); }
+    }
+    ctx.fillStyle = grainPattern(ctx); ctx.globalAlpha = 0.35; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  }
+
+  // ---------- Styl C: mgła i światło ----------
+  function fogBand(ctx, W, y, h, color, a) {
+    var g = ctx.createLinearGradient(0, y - h, 0, y + h);
+    g.addColorStop(0, rgba(color, 0)); g.addColorStop(0.5, rgba(color, a)); g.addColorStop(1, rgba(color, 0));
+    ctx.fillStyle = g; ctx.fillRect(0, y - h, W, h * 2);
+  }
+  function drawMist(ctx, W, H, scene, tree, seedBase) {
+    var night = scene === "winter";
+    var gy = H * 0.66, gx = W * 0.5, M = mapper(gx, gy, H);
+    var sky = ctx.createLinearGradient(0, 0, 0, gy);
+    if (night) { sky.addColorStop(0, "#0c1324"); sky.addColorStop(0.6, "#1b2742"); sky.addColorStop(1, "#33405e"); }
+    else { sky.addColorStop(0, "#c5cfd0"); sky.addColorStop(0.6, "#e2ddd2"); sky.addColorStop(1, "#efe3cf"); }
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, gy + 2);
+    if (night) {
+      // zorza
+      ctx.save(); ctx.globalCompositeOperation = "lighter";
+      for (var k = 0; k < 5; k++) {
+        var g = ctx.createLinearGradient(0, H * 0.06, 0, H * 0.32);
+        g.addColorStop(0, "rgba(120,230,180,0)"); g.addColorStop(0.55, "rgba(110,220,170," + (0.07 + k * 0.012) + ")"); g.addColorStop(1, "rgba(110,220,170,0)");
+        ctx.strokeStyle = g; ctx.lineWidth = H * (0.05 + k * 0.012);
+        ctx.beginPath(); ctx.moveTo(-W * 0.1, H * (0.24 - k * 0.012));
+        ctx.bezierCurveTo(W * 0.25, H * (0.1 + k * 0.01), W * 0.55, H * (0.3 - k * 0.015), W * 1.1, H * (0.12 + k * 0.01));
+        ctx.stroke();
+      }
+      ctx.restore();
+      var rs = rng(seedBase + 7); ctx.fillStyle = "#ffffff";
+      for (var s = 0; s < 120; s++) { ctx.globalAlpha = 0.3 + rs() * 0.7; ctx.beginPath(); ctx.arc(rs() * W, rs() * gy * 0.8, rs() * 1.1 + 0.3, 0, Math.PI * 2); ctx.fill(); }
+      ctx.globalAlpha = 1;
+      var mx = W * 0.8, my = H * 0.17, mr = H * 0.032;
+      var halo = ctx.createRadialGradient(mx, my, mr * 0.8, mx, my, mr * 6);
+      halo.addColorStop(0, "rgba(230,236,255,0.35)"); halo.addColorStop(1, "rgba(230,236,255,0)");
+      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(mx, my, mr * 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#f3f1ea"; ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill();
+    } else {
+      var sx = W * 0.22, sy = H * 0.3;
+      var glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, H * 0.35);
+      glow.addColorStop(0, "rgba(255,240,205,0.95)"); glow.addColorStop(0.15, "rgba(255,236,200,0.6)"); glow.addColorStop(1, "rgba(255,236,200,0)");
+      ctx.fillStyle = glow; ctx.fillRect(0, 0, W, gy);
+    }
+    var layers = night
+      ? [["#4a5775", 0.17, 3], ["#384561", 0.12, 4], ["#26314a", 0.07, 5]]
+      : [["#b4bcb7", 0.17, 3], ["#939f9a", 0.12, 4], ["#6c7873", 0.07, 5]];
+    layers.forEach(function (L, li) {
+      var fn = hillFn(W, gy - H * L[1], H * 0.02, 0.014 + li * 0.004, 30 + li);
+      ctx.fillStyle = L[0]; hillPath(ctx, W, H, fn); ctx.fill();
+      var rt = rng(40 + li);
+      for (var t = 0; t < 34; t++) {
+        var tx = rt() * W; var th = H * (0.03 + rt() * 0.03 + li * 0.012);
+        if (li === 2 && Math.abs(tx - gx) < W * 0.14) continue;
+        spruce(ctx, tx, fn(tx) + H * 0.01, th); ctx.fill();
+      }
+      fogBand(ctx, W, gy - H * L[1] + H * 0.015, H * 0.035, night ? "#7d8db0" : "#f4efe6", night ? 0.35 : 0.65);
+    });
+    var ground = hillFn(W, gy, H * 0.004, 0.01, 14);
+    var snowOrField = ctx.createLinearGradient(0, gy - H * 0.03, 0, gy);
+    if (night) { snowOrField.addColorStop(0, "#a7b6cf"); snowOrField.addColorStop(1, "#d9e2ef"); }
+    else { snowOrField.addColorStop(0, "#b39a72"); snowOrField.addColorStop(1, "#9d7f57"); }
+    ctx.fillStyle = snowOrField; hillPath(ctx, W, H, hillFn(W, gy - H * 0.025, H * 0.008, 0.02, 13)); ctx.fill();
+    // ziemia
+    var soil = ctx.createLinearGradient(0, gy, 0, H);
+    soil.addColorStop(0, night ? "#2c2724" : "#5a4636"); soil.addColorStop(1, night ? "#120f0e" : "#2b211b");
+    ctx.fillStyle = soil; hillPath(ctx, W, H, ground); ctx.fill();
+    ctx.save(); ctx.shadowColor = night ? "rgba(170,220,255,0.7)" : "rgba(240,205,140,0.8)"; ctx.shadowBlur = H * 0.012;
+    ctx.strokeStyle = night ? "rgba(185,215,240,0.55)" : "rgba(235,200,140,0.6)"; ctx.lineCap = "round";
+    tree.roots.forEach(function (b) {
+      var a = M(b.x, b.y), c = M(b.cx, b.cy), e = M(b.x2, b.y2);
+      ctx.lineWidth = Math.max(0.8, b.w * H * 0.8); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(c[0], c[1], e[0], e[1]); ctx.stroke();
+    });
+    ctx.restore();
+    var sg = ctx.createLinearGradient(0, gy - H * 0.01, 0, gy + H * 0.02);
+    if (night) { sg.addColorStop(0, "#eef3fa"); sg.addColorStop(1, "#c9d4e4"); } else { sg.addColorStop(0, "#a88559"); sg.addColorStop(1, "#7e6142"); }
+    ctx.fillStyle = sg;
+    ctx.beginPath(); ctx.moveTo(0, ground(0) - H * 0.006); for (var x = 0; x <= W + 4; x += 4) ctx.lineTo(x, ground(x) - H * 0.006);
+    for (var x2 = W; x2 >= -4; x2 -= 4) ctx.lineTo(x2, ground(x2) + H * 0.012); ctx.closePath(); ctx.fill();
+    if (night) footprints(ctx, W, H, gy - H * 0.03, "rgba(110,130,170,0.5)", 41);
+    // drzewo: sylwetka z obwódką światła
+    var light = night ? { x: W * 0.8, y: H * 0.17 } : { x: W * 0.22, y: H * 0.3 };
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    tree.branches.forEach(function (b) {
+      var a = M(b.x, b.y), c = M(b.cx, b.cy), e = M(b.x2, b.y2);
+      ctx.strokeStyle = night ? "#161b27" : "#3a3631"; ctx.lineWidth = Math.max(1, b.w * H);
+      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(c[0], c[1], e[0], e[1]); ctx.stroke();
+      var dx = light.x > a[0] ? 1 : -1;
+      ctx.strokeStyle = night ? "rgba(200,215,240,0.35)" : "rgba(255,226,170,0.45)"; ctx.lineWidth = Math.max(0.5, b.w * H * 0.25);
+      ctx.beginPath(); ctx.moveTo(a[0] + dx * b.w * H * 0.35, a[1]); ctx.quadraticCurveTo(c[0] + dx * b.w * H * 0.35, c[1], e[0] + dx * b.w * H * 0.3, e[1]); ctx.stroke();
+    });
+    var cols = night ? ["#2e3b36", "#3b2f33", "#33403a"] : ["#7f8e4c", "#a69a48", "#c98d42", "#b5603a"];
+    tree.leaves.forEach(function (l) {
+      var q = M(l.x, l.y);
+      var col = night ? pick(cols, l.tone) : pick(cols, Math.min(0.999, l.tone * 0.75 + l.side * 0.3));
+      var lg = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], l.len * H);
+      lg.addColorStop(0, col); lg.addColorStop(1, col);
+      ctx.globalAlpha = 0.88; ctx.fillStyle = col; leafPath(ctx, q[0], q[1], l.a, l.len * H, l.wide); ctx.fill();
+      var lit = (light.x - q[0]) * Math.cos(l.a) + 0 > 0;
+      if (l.side > 0.5) { ctx.globalAlpha = night ? 0.35 : 0.3; ctx.fillStyle = night ? "#dbe6f7" : "#fff0cc"; leafPath(ctx, q[0], q[1], l.a, l.len * H * 0.6, l.wide * 0.5); ctx.fill(); }
+      ctx.globalAlpha = 1; void lit;
+    });
+    fogBand(ctx, W, gy - H * 0.01, H * 0.03, night ? "#9aaacc" : "#f6f0e6", night ? 0.25 : 0.5);
+    if (night) {
+      var rf = rng(61);
+      for (var f = 0; f < 110; f++) { ctx.globalAlpha = 0.4 + rf() * 0.6; ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(rf() * W, rf() * gy, rf() * 1.6 + 0.3, 0, Math.PI * 2); ctx.fill(); }
+      ctx.globalAlpha = 1;
+      var rg = rng(71); ctx.fillStyle = "#ffffff";
+      for (var gl = 0; gl < 50; gl++) { var gx2 = rg() * W; ctx.globalAlpha = rg(); ctx.fillRect(gx2, ground(gx2) - H * 0.004 - rg() * H * 0.02, 1.2, 1.2); }
+      ctx.globalAlpha = 1;
+    } else {
+      var rb = robinAnchor(tree); if (rb) { var pt = M(rb.x2, rb.y2); drawRobin(ctx, pt[0], pt[1], H * 0.011, "mist"); }
+      var vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.75);
+      vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(30,25,20,0.18)");
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  // ---------- Rysowanie ----------
+  var seed = Math.floor(Math.random() * 1e9);
+  var tree = makeTree(seed);
+  var DRAW = { paper: drawPaper, ink: drawInk, mist: drawMist };
+
+  function renderCanvas(cv) {
+    var style = cv.closest("section").getAttribute("data-style");
+    var scene = cv.getAttribute("data-scene");
+    var rect = cv.getBoundingClientRect();
+    var W = Math.max(10, Math.round(rect.width)), H = Math.max(10, Math.round(rect.height));
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = W * dpr; cv.height = H * dpr;
+    var ctx = cv.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    try { DRAW[style](ctx, W, H, scene, tree, seed); } catch (e) { console.error(e); }
+  }
+  function renderAll() {
+    document.getElementById("seedNote").textContent = "Przykładowe nasionko nr " + (seed % 100000);
+    document.querySelectorAll("canvas[data-scene]").forEach(renderCanvas);
+  }
+  var pending = null;
+  function schedule() { if (pending) cancelAnimationFrame(pending); pending = requestAnimationFrame(renderAll); }
+  if ("ResizeObserver" in window) {
+    var ro = new ResizeObserver(schedule);
+    document.querySelectorAll(".frame").forEach(function (f) { ro.observe(f); });
+  } else { window.addEventListener("resize", schedule); }
+  document.getElementById("reseed").addEventListener("click", function () {
+    seed = Math.floor(Math.random() * 1e9); tree = makeTree(seed); renderAll();
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+  renderAll();
+})();
+</script>
