@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Mitt träd</title>
+  <meta name="description" content="Ett träd som växer tillsammans med dig.">
+  <meta name="theme-color" content="#cfd6d4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mitt träd">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Jost:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="scene" aria-label="Ditt träd"></canvas>
+
+    <div id="stage-ui">
+      <div id="voice" class="voice" aria-live="polite"></div>
+      <div id="prompt" class="prompt" hidden>
+        <div id="echo" class="echo" hidden></div>
+        <button id="question" class="question" type="button"></button>
+      </div>
+      <button id="another" class="quiet-link" type="button" hidden></button>
+      <div id="naming" class="naming" hidden>
+        <p id="naming-text" class="voice-line"></p>
+        <div class="naming-row">
+          <input id="naming-input" type="text" maxlength="24" autocomplete="off" autocapitalize="words">
+          <button id="naming-save" class="pill" type="button"></button>
+        </div>
+        <button id="naming-later" class="quiet-link" type="button"></button>
+      </div>
+    </div>
+
+    <div id="writer" class="panel" hidden>
+      <p id="writer-question" class="panel-question"></p>
+      <textarea id="answer" rows="5" autocapitalize="sentences"></textarea>
+      <div class="panel-row">
+        <div class="panel-links">
+          <button id="skip" class="quiet-link" type="button"></button>
+          <button id="other" class="quiet-link" type="button"></button>
+        </div>
+        <button id="done" class="pill" type="button"></button>
+      </div>
+    </div>
+
+    <div id="elements" class="panel" hidden>
+      <p id="elements-title" class="panel-question"></p>
+      <div id="element-grid" class="element-grid"></div>
+    </div>
+
+    <nav class="corners">
+      <button id="history-btn" class="corner-btn" type="button" aria-label="Historia">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c3-1 4-4 4-8s2-6 5-6M9 19c2 0 4-1 5-3M12 11c2 0 3 1 4 2" /></svg>
+      </button>
+      <div class="corner-right">
+        <button id="sound-btn" class="corner-btn" type="button" aria-label="Ljud">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12c2-3 4-3 6 0s4 3 6 0 4-3 4-3" /></svg>
+        </button>
+        <button id="settings-btn" class="corner-btn" type="button" aria-label="Inställningar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" /></svg>
+          <span id="settings-dot" class="dot" hidden></span>
+        </button>
+      </div>
+    </nav>
+
+    <div id="tip" class="tip" hidden></div>
+
+    <section id="sheet" class="sheet" hidden aria-modal="true" role="dialog">
+      <header class="sheet-head">
+        <h2 id="sheet-title"></h2>
+        <button id="sheet-close" class="corner-btn" type="button" aria-label="Stäng">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+      </header>
+      <div id="sheet-body" class="sheet-body"></div>
+    </section>
+
+    <div id="first" class="first" hidden></div>
+    <div id="fade" class="fade"></div>
+    <div id="devbar" class="devbar" hidden></div>
+  </main>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -485,3 +485,13 @@ Próbki: https://claude.ai/artifact/5j5xuxZHZYYM7XB9n96eMx
 **Okrągła korona i łuki konarów:** konary rosną łukami jak w naturze: wychodzą z pnia na boki i stopniowo zakręcają ku górze, a ich końce (i gałązki) układają się na obrysie korony, więc pień i konary razem tworzą zaokrągloną sylwetkę. Obrys zależy od temperamentu: okrągłe (koło), rozłożyste (szeroka elipsa), smukłe (wysoka elipsa), płaczące (łuki w dół). Korona rośnie razem z drzewem.
 
 **Ocena użytkownika po etapie 3:** „Piękne nie są, ale do testu wystarczy.” Wygląd drzewa jest zaakceptowany do 30-dniowego testu. **Do wersji 1.1:** dopracowanie piękna i harmonii drzewa (proporcje korony, łuki konarów, gęstość liści) według wytycznych powyżej.
+
+---
+
+## Wersja 1: stan na start testu
+
+**Gotowe:** pierwsze doświadczenie (nasionko, wybór miejsca), pełny rytuał (pytanie, echo, zapis szkicu, „Inga ord idag”, zamiana pytania, sześć żywiołów, odpowiedź drzewa, kolejne rytuały tego dnia), wzrost drzewa z animacją, uśpienie i przebudzenie, powitania i obserwacje zdarzeń (także spod nieobecności), świat (pory roku dla miejsca, światło ze słońca, księżyc z fazą, zorza, pogoda prawdziwa lub symulowana, zdarzenia i ślady), dotyk drzewa (wspomnienie dnia), imię, historia drzewa (grupy po porach roku, chwile i zwykłe dni, poprawianie tego samego dnia, usuwanie), próg 30 dni (powitanie, wpis, kamień), ustawienia (imię, miejsce, dźwięk, nasiono: zbierz i zasadź, wskazówka instalacji, przypomnienie o kopii), dźwięk (wiatr, deszcz, żywioły), instalacja na ekranie głównym i praca offline, tryb deweloperski (`?dev`).
+
+**Tymczasowe:** teksty po szwedzku napisane przez Claude (`texts/sv.json`) do zastąpienia tekstami użytkownika.
+
+**Do wersji 1.1 (przed wiosną):** wiosna i lato (pąki, kwiaty i ich kolor, pełne opadanie liści od drugiej jesieni), próg 90 dni (ścieżka) i słój w pniu przy rocznicy, letnie zdarzenia i dźwięki, nagrania ptaków, dopracowanie piękna drzewa.

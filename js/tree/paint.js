@@ -355,6 +355,14 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
       ctx.beginPath(); ctx.ellipse(gx, gy + 1, H * 0.02 * (0.5 + tree.moss), H * 0.004, 0, Math.PI, 0); ctx.fill();
     }
   }
+  // płaski kamień pod drzewem: ślad trzydziestu dni (bez liczb)
+  if (look.milestoneStone) {
+    const sx = gx - H * 0.09, sr = H * 0.022;
+    const gst = ctx.createLinearGradient(0, gy - sr * 0.5, 0, gy + 2);
+    gst.addColorStop(0, mix(pal.stone, "#ffffff", 0.2)); gst.addColorStop(1, mix(pal.stone, "#000000", 0.2));
+    ctx.fillStyle = gst; ctx.beginPath(); ctx.ellipse(sx, groundAt(sx) + 1, sr * 1.5, sr * 0.45, -0.05, Math.PI, 0); ctx.fill();
+    ctx.strokeStyle = rgba(pal.rim, 0.3); ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(sx, groundAt(sx) + 1, sr * 1.5, sr * 0.45, -0.05, Math.PI * 1.1, Math.PI * 1.6); ctx.stroke();
+  }
   if (extras.ground) extras.ground(ctx, W, H, gy, groundAt, pal);
 
   // opadłe liście na ziemi
@@ -471,7 +479,7 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
   const drawn = [];
   tree.leaves.forEach((l) => {
     const sp = segPoint(l.seg, l.t); if (!sp || l.grow <= 0.02) return;
-    const size = Math.max(2.4, l.size * ppu * l.grow);
+    const size = Math.max(2.4, l.size * ppu * l.grow * (1 - 0.3 * (look.sleep || 0)));
     const q0 = M(sp.x, sp.y);
     const flutter = Math.sin(t * 1.7 + l.tone * 20) * 0.08 * windNow;
     const ang = sp.a + l.spread + flutter;
@@ -480,7 +488,8 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
     const q = [q0[0] + Math.sin(ang) * st, q0[1] - Math.cos(ang) * st];
     ctx.globalAlpha = 0.9; ctx.strokeStyle = pal.trunk; ctx.lineWidth = Math.max(0.6, size * 0.06);
     ctx.beginPath(); ctx.moveTo(q0[0], q0[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
-    const col = leafColor(l, look, tree);
+    let col = leafColor(l, look, tree);
+    if (look.sleep > 0) col = mix(col, night ? "#2a2e38" : "#8a877c", look.sleep * 0.45);   // uśpienie: przygaszone, złożone liście
     const shape = tree.genes.leafShape;
     ctx.globalAlpha = 0.94; ctx.fillStyle = col;
     leafPath(ctx, q[0], q[1], ang, size, tree.genes.leafWide, tree.genes.leafPointy, shape); ctx.fill();

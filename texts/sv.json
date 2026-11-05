@@ -1,0 +1,367 @@
+{
+  "_info": "TYMCZASOWE TEKSTY napisane przez Claude. Zostaną zastąpione tekstami użytkownika (docs/PROMPT_TEKSTY.md).",
+  "ui": {
+    "app_name": "Mitt träd",
+    "first_seed_1": "Du har fått ett frö.",
+    "first_seed_2": "Det här trädet kommer att växa tillsammans med dig.",
+    "first_seed_3": "Ingen vet ännu vad det ska bli.",
+    "first_place_question": "Var vill du plantera ditt träd?",
+    "first_place_use_location": "Använd min plats",
+    "first_place_search_placeholder": "Skriv en ort",
+    "first_place_plant": "Plantera",
+    "first_planted": "Fröet vilar nu i jorden i {plats}.",
+    "answer_placeholder": "Skriv det som kommer…",
+    "answer_done": "Klar",
+    "skip_words": "Inga ord idag",
+    "other_question": "Fråga mig något annat",
+    "choose_element": "Vad bar dagen med sig?",
+    "element_sun": "Sol",
+    "element_sun_meaning": "Jag fick energi",
+    "element_water": "Vatten",
+    "element_water_meaning": "Jag fick stöd",
+    "element_seed": "Frö",
+    "element_seed_meaning": "Jag provade något nytt",
+    "element_leaf": "Löv",
+    "element_leaf_meaning": "Jag släppte något",
+    "element_wind": "Vind",
+    "element_wind_meaning": "Jag mötte något svårt",
+    "element_stone": "Sten",
+    "element_stone_meaning": "Jag bara var",
+    "another_ritual": "Vad mer bar den här dagen?",
+    "history_title": "Mitt träds historia",
+    "history_title_named": "{namns} historia",
+    "history_empty": "Historien har bara börjat.",
+    "ordinal_1": "första",
+    "ordinal_2": "andra",
+    "ordinal_3": "tredje",
+    "ordinal_4": "fjärde",
+    "ordinal_5": "femte",
+    "season_autumn": "hösten",
+    "season_winter": "vintern",
+    "season_spring": "våren",
+    "season_summer": "sommaren",
+    "time_morning": "morgon",
+    "time_day": "eftermiddag",
+    "time_evening": "kväll",
+    "time_night": "natt",
+    "mood_clear": "klar",
+    "mood_cloudy": "grå",
+    "mood_rain": "regnig",
+    "mood_snow": "snöig",
+    "mood_fog": "dimmig",
+    "mood_wind": "blåsig",
+    "mood_frost": "frostig",
+    "read_more": "Läs allt",
+    "edit": "Redigera",
+    "delete": "Ta bort",
+    "delete_confirm": "Vill du ta bort orden? Det som har vuxit finns kvar.",
+    "cancel": "Avbryt",
+    "confirm": "Ja",
+    "touch_branch": "Den här grenen växte {datum}.",
+    "touch_root": "Den här roten växte {datum}.",
+    "touch_bud": "Den här knoppen kom {datum}.",
+    "touch_flower": "Den här blomman slog ut {datum}.",
+    "touch_no_words": "Den dagen fanns inga ord. Det räckte ändå.",
+    "naming_invite": "Vi börjar lära känna varandra. Vad vill du kalla mig?",
+    "naming_placeholder": "Ett namn",
+    "naming_save": "Spara",
+    "naming_later": "Kanske senare",
+    "settings_title": "Inställningar",
+    "settings_name": "Trädets namn",
+    "settings_place": "Plats",
+    "settings_sound_on": "Ljud på",
+    "settings_sound_off": "Ljud av",
+    "settings_collect_seed": "Samla frö",
+    "settings_collect_seed_hint": "Ett frö är en kopia av hela trädet. Spara det någonstans tryggt, till exempel i iCloud Drive.",
+    "settings_plant_seed": "Plantera från frö",
+    "settings_plant_seed_confirm": "Det här ersätter trädet som växer här nu med trädet från fröet. Vill du fortsätta?",
+    "settings_plant_seed_error": "Den här filen är inget frö från Mitt träd.",
+    "backup_reminder": "Det var länge sedan du samlade ett frö.",
+    "install_hint": "Tryck på Dela och välj Lägg till på hemskärmen. Då har trädet en egen plats och väntar tryggt på dig."
+  },
+  "questions": [
+    { "id": "q_core_01", "pool": "core", "time": "any", "theme": "meaning", "weight": "deep", "text": "Vad gav den här tiden mening?" },
+    { "id": "q_core_02", "pool": "core", "time": "evening", "theme": "courage", "weight": "deep", "text": "Vad gjorde du idag trots att det kändes svårt?" },
+    { "id": "q_core_03", "pool": "core", "time": "any", "theme": "relationships", "weight": "deep", "text": "Vem hjälper dig att växa just nu?" },
+    { "id": "q_core_04", "pool": "core", "time": "any", "theme": "rest", "weight": "light", "text": "Vad ger dig vila nu för tiden?" },
+    { "id": "q_core_05", "pool": "core", "time": "any", "theme": "development", "weight": "deep", "text": "Vad håller på att förändras i dig?" },
+    { "id": "q_core_06", "pool": "core", "time": "any", "theme": "letting_go", "weight": "deep", "text": "Vad bär du på som du skulle kunna lägga ner?" },
+    { "id": "q_core_07", "pool": "core", "time": "evening", "theme": "noticing", "weight": "light", "text": "Vad lade du märke till idag?" },
+    { "id": "q_core_08", "pool": "core", "time": "any", "theme": "body", "weight": "light", "text": "Hur mår din kropp just nu?" },
+    { "id": "q_core_09", "pool": "core", "time": "morning", "theme": "meaning", "weight": "light", "text": "Vad vill du ge plats åt idag?" },
+    { "id": "q_core_10", "pool": "core", "time": "any", "theme": "success", "weight": "deep", "text": "Vad betyder ett gott liv för dig nu?" },
+    { "id": "q_core_11", "pool": "core", "time": "any", "theme": "relationships", "weight": "light", "text": "Vem tänker du på oftast den här veckan?" },
+    { "id": "q_core_12", "pool": "core", "time": "any", "theme": "development", "weight": "deep", "text": "Vilka villkor hjälper dig att växa?" },
+    { "id": "q_wan_01", "pool": "wandering", "time": "evening", "theme": "meaning", "weight": "light", "text": "Vad var lite gott idag?" },
+    { "id": "q_wan_02", "pool": "wandering", "time": "evening", "theme": "relationships", "weight": "light", "text": "Vem var du glad att träffa idag?" },
+    { "id": "q_wan_03", "pool": "wandering", "time": "morning", "theme": "rest", "weight": "light", "text": "Hur sov du i natt?" },
+    { "id": "q_wan_04", "pool": "wandering", "time": "morning", "theme": "meaning", "weight": "light", "text": "Vad från igår vill du ta med dig?" },
+    { "id": "q_wan_05", "pool": "wandering", "time": "any", "theme": "noticing", "weight": "light", "text": "Vilket ljud har du hört idag som du tyckte om?" },
+    { "id": "q_wan_06", "pool": "wandering", "time": "evening", "theme": "courage", "weight": "light", "text": "Vad sa du ja till idag?" },
+    { "id": "q_wan_07", "pool": "wandering", "time": "any", "theme": "development", "weight": "light", "text": "Vad har du lärt dig på sistone?" },
+    { "id": "q_wan_08", "pool": "wandering", "time": "evening", "theme": "letting_go", "weight": "light", "text": "Vad kan få vara ofärdigt i kväll?" },
+    { "id": "q_wan_09", "pool": "wandering", "time": "any", "theme": "body", "weight": "light", "text": "Var i kroppen känns det lätt just nu?" },
+    { "id": "q_wan_10", "pool": "wandering", "time": "evening", "theme": "success", "weight": "light", "text": "Vad gjorde dagen meningsfull?" },
+    { "id": "q_wan_11", "pool": "wandering", "time": "any", "theme": "competition", "weight": "deep", "text": "Vem blev bättre tack vare hur du tävlade?" },
+    { "id": "q_wan_12", "pool": "wandering", "time": "morning", "theme": "courage", "weight": "deep", "text": "Vad skulle du göra idag om du vore lite modigare?" },
+    { "id": "q_wan_13", "pool": "wandering", "time": "any", "theme": "relationships", "weight": "deep", "text": "Vem har du inte hört av dig till på länge?" },
+    { "id": "q_wan_14", "pool": "wandering", "time": "evening", "theme": "noticing", "weight": "light", "text": "Hur såg himlen ut idag?" },
+    { "id": "q_wan_15", "pool": "wandering", "time": "any", "theme": "rest", "weight": "light", "text": "När kände du dig senast lugn?" },
+    { "id": "q_wan_16", "pool": "wandering", "time": "evening", "theme": "development", "weight": "deep", "text": "Vilken ny möjlighet såg du idag?" },
+    { "id": "q_wan_17", "pool": "wandering", "time": "any", "theme": "meaning", "weight": "deep", "text": "Vad skulle du sakna om det försvann?" },
+    { "id": "q_wan_18", "pool": "wandering", "time": "morning", "theme": "body", "weight": "light", "text": "Vad behöver din kropp idag?" },
+    { "id": "q_wan_19", "pool": "wandering", "time": "any", "theme": "letting_go", "weight": "deep", "text": "Vilken gammal förväntan på dig själv är du redo att släppa?" },
+    { "id": "q_wan_20", "pool": "wandering", "time": "evening", "theme": "relationships", "weight": "light", "text": "Vem fick dig att le idag?" },
+    { "id": "q_wan_21", "pool": "wandering", "time": "any", "theme": "noticing", "weight": "light", "text": "Vad var vackert, fast ingen annan såg det?" },
+    { "id": "q_wan_22", "pool": "wandering", "time": "evening", "theme": "success", "weight": "deep", "text": "Vad gjorde du idag som ingen kommer att mäta?" },
+    { "id": "q_wan_23", "pool": "wandering", "time": "any", "theme": "courage", "weight": "light", "text": "Vad provade du för första gången på länge?" },
+    { "id": "q_wan_24", "pool": "wandering", "time": "morning", "theme": "rest", "weight": "light", "text": "Vad kan få gå långsamt idag?" },
+    { "id": "q_wan_25", "pool": "wandering", "time": "any", "theme": "competition", "weight": "light", "text": "Vem inspirerade dig utan att veta om det?" },
+    { "id": "q_wan_26", "pool": "wandering", "time": "evening", "theme": "body", "weight": "light", "text": "Var var du ute idag?" },
+    { "id": "q_wan_27", "pool": "wandering", "time": "any", "theme": "development", "weight": "light", "text": "Vad är du nyfiken på just nu?" },
+    { "id": "q_wan_28", "pool": "wandering", "time": "any", "theme": "meaning", "weight": "light", "text": "Vad är du tacksam för i det lilla?" },
+    { "id": "q_wan_29", "pool": "wandering", "time": "evening", "theme": "letting_go", "weight": "light", "text": "Vad får stanna i dag och inte följa med in i morgon?" },
+    { "id": "q_wan_30", "pool": "wandering", "time": "any", "theme": "relationships", "weight": "deep", "text": "Vem växte du tillsammans med på sistone?" }
+  ],
+  "themes": {
+    "meaning": "mening", "courage": "mod", "development": "utveckling", "relationships": "människor nära dig", "success": "vad som räknas",
+    "competition": "att mäta sig", "rest": "vila", "letting_go": "att släppa", "noticing": "det du lägger märke till", "body": "kroppen"
+  },
+  "responses": {
+    "sun": {
+      "general": [
+        { "id": "r_sun_g01", "text": "Ljuset nådde ända in i grenarna idag." },
+        { "id": "r_sun_g02", "text": "Kronan breder ut sig lite.\nVärme gör det lättare att sträcka sig." },
+        { "id": "r_sun_g03", "text": "Bladen vände sig mot dig." },
+        { "id": "r_sun_g04", "text": "Det finns dagar som fyller på.\nIdag var en sådan." },
+        { "id": "r_sun_g05", "text": "Solen stannade en stund i kronan." },
+        { "id": "r_sun_g06", "text": "Energi kan också vara stilla." }
+      ],
+      "first": [{ "id": "r_sun_f01", "text": "Första gången solen kom hit.\nJag minns den." }],
+      "repeat": [{ "id": "r_sun_r01", "text": "Ljuset har varit här ofta på sistone.\nKronan blir bredare." }],
+      "rare": [{ "id": "r_sun_x01", "text": "Det var länge sedan solen var här.\nGrenarna kände igen den." }]
+    },
+    "water": {
+      "general": [
+        { "id": "r_water_g01", "text": "Nytt vatten nådde rötterna.\nVäxt börjar ofta i det tysta." },
+        { "id": "r_water_g02", "text": "Någon gav dig något att stå på." },
+        { "id": "r_water_g03", "text": "Det gröna blev lite djupare idag." },
+        { "id": "r_water_g04", "text": "Stöd syns sällan.\nMen trädet vet var det kom ifrån." },
+        { "id": "r_water_g05", "text": "Jorden runt rötterna är mjuk nu." },
+        { "id": "r_water_g06", "text": "Vatten." }
+      ],
+      "first": [{ "id": "r_water_f01", "text": "Det första vattnet.\nRötterna drack långsamt." }],
+      "repeat": [{ "id": "r_water_r01", "text": "Du har fått mycket stöd på sistone.\nBladen syns det på." }],
+      "rare": [{ "id": "r_water_x01", "text": "Det var länge sedan det kom vatten.\nRötterna tog emot det." }]
+    },
+    "seed": {
+      "general": [
+        { "id": "r_seed_g01", "text": "En ny knopp syns vid grenens spets." },
+        { "id": "r_seed_g02", "text": "Små frön blir skogar." },
+        { "id": "r_seed_g03", "text": "Något prövades idag.\nTrädet gjorde plats för det." },
+        { "id": "r_seed_g04", "text": "En ny skott letar efter sin riktning." },
+        { "id": "r_seed_g05", "text": "Det nya behöver inte veta vart det ska." },
+        { "id": "r_seed_g06", "text": "En knopp till." }
+      ],
+      "first": [{ "id": "r_seed_f01", "text": "Den första nya knoppen.\nDen vet ännu inte vad den ska bli." }],
+      "repeat": [{ "id": "r_seed_r01", "text": "Du har provat mycket nytt på sistone.\nGrenarna förgrenar sig." }],
+      "rare": [{ "id": "r_seed_x01", "text": "Det var länge sedan ett frö kom hit.\nEn knopp vaknade." }]
+    },
+    "leaf": {
+      "general": [
+        { "id": "r_leaf_g01", "text": "Ett löv föll stilla idag.\nTräd vet också hur man släpper taget." },
+        { "id": "r_leaf_g02", "text": "Det blev lite ljusare mellan grenarna." },
+        { "id": "r_leaf_g03", "text": "Det som släpps blir jord för något annat." },
+        { "id": "r_leaf_g04", "text": "Kronan andas lättare nu." },
+        { "id": "r_leaf_g05", "text": "Ett löv på marken, ett mellanrum i kronan." },
+        { "id": "r_leaf_g06", "text": "Lättare." }
+      ],
+      "first": [{ "id": "r_leaf_f01", "text": "Det första lövet som föll.\nDet låg kvar en stund vid stammen." }],
+      "repeat": [{ "id": "r_leaf_r01", "text": "Mycket har fått falla på sistone.\nTrädet står kvar, lättare." }],
+      "rare": [{ "id": "r_leaf_x01", "text": "Det var länge sedan något fick falla.\nDet blev stilla efteråt." }]
+    },
+    "wind": {
+      "general": [
+        { "id": "r_wind_g01", "text": "Vinden var stark idag.\nVissa rötter växer djupare av svåra dagar." },
+        { "id": "r_wind_g02", "text": "Stammen höll." },
+        { "id": "r_wind_g03", "text": "Grenarna böjde sig och kom tillbaka." },
+        { "id": "r_wind_g04", "text": "Träd som känner vinden får hårdare ved." },
+        { "id": "r_wind_g05", "text": "Det blåste.\nTrädet står kvar." },
+        { "id": "r_wind_g06", "text": "Vinden lämnade ett spår i barken." }
+      ],
+      "first": [{ "id": "r_wind_f01", "text": "Första gången vinden kom.\nStammen lärde sig något." }],
+      "repeat": [{ "id": "r_wind_r01", "text": "Vinden har kommit ofta på sistone.\nStammen blir starkare." }],
+      "rare": [{ "id": "r_wind_x01", "text": "Det var länge sedan det blåste så här.\nTrädet mindes hur man står." }]
+    },
+    "stone": {
+      "general": [
+        { "id": "r_stone_g01", "text": "En lugn dag.\nRötterna sträckte sig lite åt sidan." },
+        { "id": "r_stone_g02", "text": "Att bara vara är också att växa." },
+        { "id": "r_stone_g03", "text": "Stenen vid stammen värmdes lite av dagen." },
+        { "id": "r_stone_g04", "text": "Ingenting behövde hända.\nTrädet stod där ändå." },
+        { "id": "r_stone_g05", "text": "Stilla." },
+        { "id": "r_stone_g06", "text": "Mossan vid roten blev lite tjockare." }
+      ],
+      "first": [{ "id": "r_stone_f01", "text": "En första sten vid stammen.\nDen ska få ligga kvar." }],
+      "repeat": [{ "id": "r_stone_r01", "text": "Många stilla dagar på sistone.\nRötterna har spridit sig." }],
+      "rare": [{ "id": "r_stone_x01", "text": "Det var länge sedan en riktigt stilla dag.\nJorden kändes fast." }]
+    },
+    "no_words": [
+      { "id": "r_nw_01", "text": "Vissa dagar talar för sig själva." },
+      { "id": "r_nw_02", "text": "Rötterna växte i det tysta." },
+      { "id": "r_nw_03", "text": "Inga ord behövdes." },
+      { "id": "r_nw_04", "text": "Det som inte sägs växer också.\nNeråt, där det är mörkt och tryggt." },
+      { "id": "r_nw_05", "text": "Tystnad." }
+    ],
+    "combined": [
+      { "id": "r_cb_01", "text": "Dagen bar mer än en sak." },
+      { "id": "r_cb_02", "text": "En dag kan rymma flera väder." },
+      { "id": "r_cb_03", "text": "Trädet tog emot också detta." },
+      { "id": "r_cb_04", "text": "Fler spår från samma dag." }
+    ],
+    "seed_stage": [
+      { "id": "r_ss_01", "text": "Något rör sig under jorden." },
+      { "id": "r_ss_02", "text": "Fröet lyssnar." },
+      { "id": "r_ss_03", "text": "Det är för tidigt att se.\nMen något har börjat." },
+      { "id": "r_ss_04", "text": "Ett skal mjuknar." }
+    ]
+  },
+  "greetings": {
+    "return_next_day": [
+      { "id": "g_nd_01", "text": "Där är du." },
+      { "id": "g_nd_02", "text": "Välkommen tillbaka." },
+      { "id": "g_nd_03", "text": "Jag har stått här och väntat lite." },
+      { "id": "g_nd_04", "text": "Hej igen." },
+      { "id": "g_nd_05", "text": "Det är bra att du kom." },
+      { "id": "g_nd_06", "text": "Du hittade hit igen." }
+    ],
+    "return_few_days": [
+      { "id": "g_fd_01", "text": "Några dagar har gått. Välkommen." },
+      { "id": "g_fd_02", "text": "Det har hänt lite här sedan sist." },
+      { "id": "g_fd_03", "text": "Där är du. Jag har stått kvar." },
+      { "id": "g_fd_04", "text": "Bra att se dig igen." }
+    ],
+    "morning": [
+      { "id": "g_mo_01", "text": "God morgon." },
+      { "id": "g_mo_02", "text": "Morgonen är ny här också." },
+      { "id": "g_mo_03", "text": "Det är tidigt. Jag är vaken." }
+    ],
+    "evening": [
+      { "id": "g_ev_01", "text": "God kväll." },
+      { "id": "g_ev_02", "text": "Dagen lägger sig." },
+      { "id": "g_ev_03", "text": "Ljuset blir mjukare nu." }
+    ],
+    "night": [
+      { "id": "g_ni_01", "text": "Det är sent. Det är lugnt här." },
+      { "id": "g_ni_02", "text": "Natten är stilla." },
+      { "id": "g_ni_03", "text": "Du kom i mörkret. Det går bra." }
+    ],
+    "same_day": [
+      { "id": "g_sd_01", "text": "Du kom tillbaka." },
+      { "id": "g_sd_02", "text": "Stanna så länge du vill." },
+      { "id": "g_sd_03", "text": "Det är samma dag fortfarande." }
+    ],
+    "awakening": [
+      { "id": "g_aw_01", "text": "Jag vilade medan du var borta.\nVälkommen tillbaka." },
+      { "id": "g_aw_02", "text": "Jag sov en stund.\nNu när du är här vaknar jag." },
+      { "id": "g_aw_03", "text": "Vila är också en del av att växa.\nBra att du är här." },
+      { "id": "g_aw_04", "text": "Bladen vecklar ut sig igen." },
+      { "id": "g_aw_05", "text": "Det var tyst ett tag.\nNu är det tyst på ett annat sätt." }
+    ],
+    "named": [
+      { "id": "g_nm_01", "text": "{namn} är här." },
+      { "id": "g_nm_02", "text": "Det är jag, {namn}." }
+    ],
+    "echo": [
+      { "id": "g_ec_01", "text": "En gång svarade du: {citat}" },
+      { "id": "g_ec_02", "text": "{datum} skrev du: {citat}" },
+      { "id": "g_ec_03", "text": "Jag minns ditt svar: {citat}" },
+      { "id": "g_ec_04", "text": "Förra gången sa du: {citat}" }
+    ],
+    "echo_year": [
+      { "id": "g_ey_01", "text": "För ett år sedan skrev du: {citat}" },
+      { "id": "g_ey_02", "text": "Ett år har gått sedan du svarade: {citat}" }
+    ]
+  },
+  "events": {
+    "rodhake": { "name": "en rödhake", "now": [{ "id": "e_rodhake_n1", "text": "En rödhake sitter på en gren." }], "away": [{ "id": "e_rodhake_a1", "text": "En rödhake vilade här medan du var borta." }] },
+    "talgoxe": { "name": "en talgoxe", "now": [{ "id": "e_talgoxe_n1", "text": "En talgoxe letar i barken." }], "away": [{ "id": "e_talgoxe_a1", "text": "En talgoxe kom förbi och sjöng en stund." }] },
+    "domherre": { "name": "en domherre", "now": [{ "id": "e_domherre_n1", "text": "En domherre lyser röd mot det grå." }], "away": [{ "id": "e_domherre_a1", "text": "En domherre satt här en morgon." }] },
+    "koltrast": { "name": "en koltrast", "now": [{ "id": "e_koltrast_n1", "text": "En koltrast sjunger någonstans nära." }], "away": [{ "id": "e_koltrast_a1", "text": "En koltrast sjöng här i skymningen." }] },
+    "ekorre": { "name": "en ekorre", "now": [{ "id": "e_ekorre_n1", "text": "En ekorre stannar upp och tittar på dig." }], "away": [{ "id": "e_ekorre_a1", "text": "En ekorre sprang upp längs stammen medan du var borta." }] },
+    "igelkott": { "name": "en igelkott", "now": [{ "id": "e_igelkott_n1", "text": "En igelkott prasslar i löven." }], "away": [{ "id": "e_igelkott_a1", "text": "En igelkott sov under löven en natt." }] },
+    "hare": { "name": "en hare", "now": [{ "id": "e_hare_n1", "text": "En hare sitter alldeles stilla vid kanten." }], "away": [{ "id": "e_hare_a1", "text": "En hare kom förbi i gryningen." }] },
+    "rav": { "name": "en räv", "now": [{ "id": "e_rav_n1", "text": "En räv går förbi utan att skynda." }], "away": [{ "id": "e_rav_a1", "text": "Medan du var borta kom en räv förbi." }] },
+    "radjur": { "name": "ett rådjur", "now": [{ "id": "e_radjur_n1", "text": "Ett rådjur står i dimman vid skogskanten." }], "away": [{ "id": "e_radjur_a1", "text": "Ett rådjur betade här en tidig morgon." }] },
+    "alg": { "name": "en älg", "now": [{ "id": "e_alg_n1", "text": "En älg kliver långsamt fram ur skogen." }], "away": [{ "id": "e_alg_a1", "text": "En älg stod här en morgon, stor och tyst." }] },
+    "uggla": { "name": "en uggla", "now": [{ "id": "e_uggla_n1", "text": "En uggla sitter i kronan och ser på natten." }], "away": [{ "id": "e_uggla_a1", "text": "En uggla vilade i kronan en natt." }] },
+    "flyttfaglar": { "name": "flyttfåglar", "now": [{ "id": "e_flyttfaglar_n1", "text": "En plog av fåglar drar över himlen." }], "away": [{ "id": "e_flyttfaglar_a1", "text": "Flyttfåglar drog förbi högt över trädet." }] },
+    "fjarilar": { "name": "fjärilar", "now": [{ "id": "e_fjarilar_n1", "text": "Fjärilar dansar runt kronan." }], "away": [{ "id": "e_fjarilar_a1", "text": "Fjärilar besökte trädet en varm dag." }] },
+    "bin": { "name": "bin", "now": [{ "id": "e_bin_n1", "text": "Det surrar i kronan." }], "away": [{ "id": "e_bin_a1", "text": "Bin kom förbi medan du var borta." }] },
+    "eldflugor": { "name": "eldflugor", "now": [{ "id": "e_eldflugor_n1", "text": "Små ljus svävar i mörkret." }], "away": [{ "id": "e_eldflugor_a1", "text": "En varm natt kom eldflugorna." }] },
+    "myror": { "name": "myror", "now": [{ "id": "e_myror_n1", "text": "Myror går sin väg förbi stammen." }], "away": [{ "id": "e_myror_a1", "text": "Myror har gått här flitigt." }] },
+    "daggmask": { "name": "en daggmask", "now": [{ "id": "e_daggmask_n1", "text": "En daggmask kom upp efter regnet." }], "away": [{ "id": "e_daggmask_a1", "text": "Efter regnet kom daggmaskarna upp." }] },
+    "nyckelpiga": { "name": "en nyckelpiga", "now": [{ "id": "e_nyckelpiga_n1", "text": "En nyckelpiga vilar på en gren." }], "away": [{ "id": "e_nyckelpiga_a1", "text": "En nyckelpiga gick längs en gren en dag." }] },
+    "dagg": { "name": "dagg", "now": [{ "id": "e_dagg_n1", "text": "Daggen glittrar på grenarna." }], "away": [{ "id": "e_dagg_a1", "text": "Morgnarna har varit fulla av dagg." }] },
+    "dimma": { "name": "dimma", "now": [{ "id": "e_dimma_n1", "text": "Dimman ligger kvar länge idag." }], "away": [{ "id": "e_dimma_a1", "text": "Morgondimma omgav trädet medan du var borta." }] },
+    "frost": { "name": "frost", "now": [{ "id": "e_frost_n1", "text": "Frosten har ritat på bladen." }], "away": [{ "id": "e_frost_a1", "text": "Det var frost här en natt." }] },
+    "forsta_snon": { "name": "den första snön", "now": [{ "id": "e_forsta_snon_n1", "text": "Den första snön har kommit." }], "away": [{ "id": "e_forsta_snon_a1", "text": "Den första snön föll medan du var borta." }] },
+    "snofall": { "name": "snö", "now": [{ "id": "e_snofall_n1", "text": "Det snöar stilla." }], "away": [{ "id": "e_snofall_a1", "text": "Det snöade medan du var borta." }] },
+    "istappar": { "name": "istappar", "now": [{ "id": "e_istappar_n1", "text": "Små istappar hänger från grenarna." }], "away": [{ "id": "e_istappar_a1", "text": "Istappar växte på grenarna en kall dag." }] },
+    "regn": { "name": "regn", "now": [{ "id": "e_regn_n1", "text": "Regnet faller mjukt genom kronan." }], "away": [{ "id": "e_regn_a1", "text": "Det regnade medan du var borta. Rötterna fick vatten." }] },
+    "vattenpolar": { "name": "vattenpölar", "now": [{ "id": "e_vattenpolar_n1", "text": "Himlen speglar sig i pölarna." }], "away": [{ "id": "e_vattenpolar_a1", "text": "Regnet lämnade pölar efter sig." }] },
+    "regnbage": { "name": "en regnbåge", "now": [{ "id": "e_regnbage_n1", "text": "En regnbåge står över skogen." }], "away": [{ "id": "e_regnbage_a1", "text": "En regnbåge stod här efter regnet." }] },
+    "stark_vind": { "name": "stark vind", "now": [{ "id": "e_stark_vind_n1", "text": "Vinden går genom grenarna." }], "away": [{ "id": "e_stark_vind_a1", "text": "Vinden var stark medan du var borta." }] },
+    "fallna_lov": { "name": "fallna löv", "now": [{ "id": "e_fallna_lov_n1", "text": "Löven ligger i en mjuk ring runt stammen." }], "away": [{ "id": "e_fallna_lov_a1", "text": "Fler löv har fallit sedan sist." }] },
+    "svamp": { "name": "svamp", "now": [{ "id": "e_svamp_n1", "text": "Svamp har vuxit upp nära rötterna." }], "away": [{ "id": "e_svamp_a1", "text": "Svamp växte upp vid stammen medan du var borta." }] },
+    "mossa": { "name": "mossa", "now": [{ "id": "e_mossa_n1", "text": "Mossan vid roten är grön och mjuk." }], "away": [{ "id": "e_mossa_a1", "text": "Mossan har vuxit lite." }] },
+    "angsblommor": { "name": "ängsblommor", "now": [{ "id": "e_angsblommor_n1", "text": "Ängen blommar runt trädet." }], "away": [{ "id": "e_angsblommor_a1", "text": "Ängsblommor slog ut medan du var borta." }] },
+    "norrsken": { "name": "norrsken", "now": [{ "id": "e_norrsken_n1", "text": "Norrskenet rör sig över himlen." }], "away": [{ "id": "e_norrsken_a1", "text": "En natt dansade norrskenet över trädet." }] },
+    "stjarnfall": { "name": "ett stjärnfall", "now": [{ "id": "e_stjarnfall_n1", "text": "En stjärna föll nyss." }], "away": [{ "id": "e_stjarnfall_a1", "text": "En natt föll en stjärna över skogen." }] },
+    "fullmane": { "name": "fullmånen", "now": [{ "id": "e_fullmane_n1", "text": "Fullmånen lyser upp grenarna." }], "away": [{ "id": "e_fullmane_a1", "text": "Fullmånen stod högt över trädet en natt." }] },
+    "ljusa_natter": { "name": "ljusa nätter", "now": [{ "id": "e_ljusa_natter_n1", "text": "Natten blir aldrig riktigt mörk nu." }], "away": [{ "id": "e_ljusa_natter_a1", "text": "Nätterna var ljusa medan du var borta." }] },
+    "spar_i_snon": { "name": "spår i snön", "now": [], "away": [{ "id": "e_spar_a1", "text": "Någon har gått här i snön." }, { "id": "e_spar_a2", "text": "Små spår leder förbi stammen." }, { "id": "e_spar_a3", "text": "Snön berättar att någon var här i natt." }] }
+  },
+  "memories": {
+    "pattern_element": {
+      "sun": [{ "id": "m_pe_sun_1", "text": "Solen kom ofta på sistone. Kronan blev bredare." }],
+      "water": [{ "id": "m_pe_water_1", "text": "Du fick mycket stöd på sistone. Bladen blev grönare." }],
+      "seed": [{ "id": "m_pe_seed_1", "text": "Du provade mycket nytt. Nya grenar sökte sin väg." }],
+      "leaf": [{ "id": "m_pe_leaf_1", "text": "Mycket fick falla på sistone. Kronan blev lättare." }],
+      "wind": [{ "id": "m_pe_wind_1", "text": "Vinden kom ofta på sistone. Stammen blev starkare." }],
+      "stone": [{ "id": "m_pe_stone_1", "text": "Många stilla dagar. Rötterna spred sig." }]
+    },
+    "pattern_theme": [{ "id": "m_pt_1", "text": "Vi har pratat om {tema} flera gånger." }],
+    "first_element": {
+      "sun": { "id": "m_fe_sun", "text": "Första gången solen kom." },
+      "water": { "id": "m_fe_water", "text": "Det första vattnet nådde rötterna." },
+      "seed": { "id": "m_fe_seed", "text": "Den första knoppen av något nytt." },
+      "leaf": { "id": "m_fe_leaf", "text": "Det första lövet som fick falla." },
+      "wind": { "id": "m_fe_wind", "text": "Första gången vinden kom." },
+      "stone": { "id": "m_fe_stone", "text": "Den första stilla dagen. En sten lades vid stammen." }
+    },
+    "stage": {
+      "sprout": [{ "id": "m_st_sprout_1", "text": "Ett skott bröt genom jorden." }],
+      "leaves": [{ "id": "m_st_leaves_1", "text": "De första bladen vecklade ut sig. Nu syns deras form." }],
+      "branch": [{ "id": "m_st_branch_1", "text": "Den första grenen sträckte sig åt sidan." }],
+      "young": [{ "id": "m_st_young_1", "text": "Ett ungt träd står här nu." }]
+    },
+    "rare_event": [{ "id": "m_re_1", "text": "{händelse} kom till trädet." }],
+    "first_snow": [{ "id": "m_fs_1", "text": "Den första snön föll på grenarna." }],
+    "named": [{ "id": "m_nm_1", "text": "Du gav mig ett namn: {namn}." }],
+    "renamed": [{ "id": "m_rn_1", "text": "Från och med idag kallar du mig {namn}." }],
+    "transplanted": [{ "id": "m_tp_1", "text": "Trädet planterades om i {plats}." }],
+    "milestone_30": {
+      "greetings": [{ "id": "m_30_g1", "text": "Jag känner dig nu.\nJag vet hur dina kvällar låter." }],
+      "entry": { "id": "m_30_e", "text": "Vi känner varandra nu. En platt sten lades vid stammen." }
+    },
+    "milestone_90": {
+      "greetings": [{ "id": "m_90_g1", "text": "Jag har blivit något eget.\nDu kan se det i grenarna." }],
+      "entry": { "id": "m_90_e", "text": "Trädet har fått sin egen karaktär. En stig har trampats fram." }
+    },
+    "anniversary": {
+      "greetings": [{ "id": "m_an_g1", "text": "Ett år till i stammen.\nJag bär det du har burit." }],
+      "entries": [{ "id": "m_an_e1", "text": "En ny årsring i stammen." }]
+    }
+  }
+}
