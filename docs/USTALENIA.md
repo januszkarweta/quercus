@@ -441,3 +441,8 @@ Pozostało: prompt do generowania tekstów dla projektu Claude użytkownika (mo�
 - Do dopracowania względem próbki: słabiej widoczny szron na liściach, większy i czytelniejszy rudzik, tekst nie może nachodzić na koronę, delikatny ruch w scenie.
 
 Próbki: https://claude.ai/artifact/5j5xuxZHZYYM7XB9n96eMx
+
+## Etap 3. Uwagi po pierwszym przeglądzie
+
+- **Krój pisma głosu drzewa: Cormorant Garamond (kursywa) ze stylu C.** Krój interfejsu: Albert Sans.
+- **Czytelność tekstu:** tekst nad sceną nie może ginąć na drzewie ani niebie (w próbce A biały tekst był słabo widoczny). Rozwiązanie: tekst zawsze nad koroną, kolor dobierany do jasności tła, delikatna papierowa poświata za tekstem.
