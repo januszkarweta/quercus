@@ -152,7 +152,7 @@ export function growTree(genome, steps, opts = {}) {
       const step = atP(birth), el = step ? step.element : null;
       const r = rng(hashSeed(genome, "trunk", j));
       // pochylenie od wiatru narasta z historią; falowanie: dwie łagodne fale
-      const windLean = G.windDir * Math.min(0.14, soFar("wind", birth) * 0.008);
+      const windLean = G.windDir * Math.min(0.09, soFar("wind", birth) * 0.0045);
       const wave = G.waveA * Math.sin(j * 0.5 + G.wavePh) + G.waveA * 0.5 * Math.sin(j * 0.19 + G.wavePh2);
       const angle = G.lean + windLean + wave * Math.min(1, j / 4) + (el === "wind" ? (r() - 0.5) * 0.06 : 0);
       let len = Math.min(0.011 + 0.0042 * j, 0.034) * (j > 12 ? Math.max(0.32, 1 - (j - 12) * 0.065) : 1);
@@ -207,6 +207,8 @@ export function growTree(genome, steps, opts = {}) {
   if (trunk.length) {
     const usedJ = new Set();
     let kept = 0;
+    const sideCount = { "1": 0, "-1": 0 };
+    let lastSide = 0;
     for (let k = 0; k < schedule.length && kept < G.maxLimbs + 2; k++) {
       const r = rng(hashSeed(genome, "limb", k));
       const lb = schedule[k] + (r() - 0.5) * 3;
@@ -224,14 +226,20 @@ export function growTree(genome, steps, opts = {}) {
         continue;
       }
       kept++;
-      // strona: naprzemiennie, ale nieregularnie; po wietrznej historii częściej strona zawietrzna
-      let side = (k % 2 === 0 ? 1 : -1) * G.sideStart;
-      if (r() < 0.25) side = -side;
+      // strona: równowaga bez symetrii. Nowy konar wyrasta po tej stronie, gdzie żywych konarów
+      // jest mniej; przy remisie naprzemiennie, a po wietrznej historii po stronie zawietrznej.
+      // Wiatr nie zabiera gałęzi jednej stronie: zmienia ich długość (lengthBias) i pochylenie pnia.
       const windy = soFar("wind", lb) / Math.max(1, lb);
-      if (side !== G.windDir && r() < windy * 0.8) side = G.windDir;
+      let side;
+      if (sideCount[1] < sideCount[-1]) side = 1;
+      else if (sideCount[-1] < sideCount[1]) side = -1;
+      else side = windy > 0.2 && r() < 0.6 ? G.windDir : (lastSide ? -lastSide : G.sideStart);
+      sideCount[side]++; lastSide = side;
       const lowFactor = 1 - Math.min(0.3, k * 0.06); // wyższe konary bardziej ku górze
       const startAngle = trunk[jAttach].angle + side * limbAngle * lowFactor * (0.85 + r() * 0.3);
-      const lengthBias = (side === G.windDir ? 1 + windy * 0.6 : 1 - windy * 0.4) * (0.8 + r() * 0.45);
+      // pochylony pień drzewo równoważy dłuższymi konarami po przeciwnej stronie
+      const counter = trunk[jAttach].angle * side < 0 ? 1 + Math.min(0.2, Math.abs(trunk[jAttach].angle) * 1.5) : 1;
+      const lengthBias = (side === G.windDir ? 1 + windy * 0.35 : 1 - windy * 0.2) * counter * (0.85 + r() * 0.3);
       const limb = axis({
         parentSeg: trunk[jAttach], depth: 1, birth: lb, side, angle: startAngle,
         maxSegs: 14, baseLen: 0.042, key: "L" + k, curve: limbCurve(side), lengthBias,
