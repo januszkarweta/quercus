@@ -448,3 +448,26 @@ Próbki: https://claude.ai/artifact/5j5xuxZHZYYM7XB9n96eMx
 
 - **Krój pisma głosu drzewa: Cormorant Garamond (kursywa) ze stylu C.** Krój interfejsu: Albert Sans.
 - **Czytelność tekstu:** tekst nad sceną nie może ginąć na drzewie ani niebie (w próbce A biały tekst był słabo widoczny). Rozwiązanie: tekst zawsze nad koroną, kolor dobierany do jasności tła, delikatna papierowa poświata za tekstem.
+
+## Etap 3. Wytyczne wyglądu drzewa (od użytkownika, obowiązujące)
+
+**Zasada nadrzędna:** czy człowiek chciałby usiąść pod tym drzewem? Drzewo ma być naturalne, spokojne, piękne i trochę nieidealne. Prawdziwe drzewo z historią, nie idealny model.
+
+1. **Charakter:** prawdziwy organizm, który przez całe życie reagował na warunki. Własna osobowość, sposób wzrostu, widoczna historia, naturalna niedoskonałość. Bez symetrycznych choinek, przypadkowego chaosu, wyglądu algorytmicznego i równomiernego rozłożenia gałęzi.
+2. **Pień (najważniejszy):** wyraźnie szersza podstawa, delikatne falowanie i skręt, bez idealnie prostych linii, wygląd czegoś, co wzmacniało się latami. Lekkie zgrubienia w miejscach dawnych gałęzi, subtelne różnice grubości, naturalne przejście między korzeniem a pniem. Pień pokazuje historię, nie perfekcję.
+3. **Główne konary:** najpierw 3–6 głównych konarów, każdy z własnym kierunkiem i logicznym połączeniem z pniem. Wyrastają stopniowo, mają różne długości, nie tworzą idealnej korony. Równowaga, ale nie symetria.
+4. **Korona:** nie kula z liści. Widoczne przestrzenie między gałęziami, światło przechodzi przez koronę, naturalne grupy liści.
+   - drzewo silne: szeroka korona, mocne konary, stabilna sylwetka,
+   - po trudnych warunkach: lekko pochylone, asymetryczne, jedna strona bardziej rozwinięta,
+   - spokojne: miękka, harmonijna korona, łagodne linie,
+   - młode: cienki pień, niewielka korona, widoczny potencjał.
+5. **Liście:** mniej, ale bardziej znaczące. Różne rozmiary i gęstość, grupy zamiast równomiernego pokrycia. Bez jednakowych kropek, równych odstępów i „drzewa z brokułów”. Pokazują sezon, energię i historię wzrostu.
+6. **Korzenie (jeden z najpiękniejszych elementów):** widoczne główne korzenie, różne kierunki wzrostu, naturalne połączenie z ziemią. Bez prostych linii spod pnia. Fundament, który szukał miejsca do życia.
+7. **Wiatr zmienia historię, nie tylko przechyla:** silny wiatr to pień lekko pochylony i gałęzie bardziej rozwinięte po jednej stronie; częsty wiatr to charakterystyczna asymetria i mocniejsze drewno; spokojne miejsce to bardziej równomierny wzrost.
+8. **Woda:** dużo wody to bujniejsze liście, większa korona, miękkie kształty; mało wody to wolniejszy wzrost, **głębsze korzenie** i mniejsza korona. *(Zmienia punkt G, w którym woda dawała głębsze korzenie.)*
+9. **Kamień i trudności nie niszczą, zostawiają ślad:** bardziej charakterystyczny pień, mocniejsze korzenie, ciekawsza sylwetka. Trudniejsze warunki tworzą charakter.
+10. **Temperamenty zamiast stylów kształtu:**
+    - rozłożyste (spreading): „daje przestrzeń innym”,
+    - smukłe (slender): „szuka światła”,
+    - płaczące (weeping): „nauczyło się elastyczności”,
+    - okrągłe (round): „buduje stabilność”.
