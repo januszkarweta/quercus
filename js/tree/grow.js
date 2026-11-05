@@ -125,16 +125,16 @@ export function growTree(genome, steps, opts = {}) {
   // ---------- Nad ziemią ----------
   function shapeTarget(depth, side, idx) {
     switch (G.shape) {
-      case "slender": return side * (0.35 + 0.1 * depth);
-      case "weeping": return side * (0.9 + 0.35 * depth + 0.08 * idx);
-      case "round": return side * (0.95 - 0.06 * idx);
-      default: return side * (1.05 + 0.08 * depth);
+      case "slender": return side * (0.5 + 0.12 * depth);
+      case "weeping": return side * (1.0 + 0.3 * depth + 0.06 * idx);
+      case "round": return side * (1.0 - 0.02 * idx + 0.1 * depth);
+      default: return side * (1.15 + 0.08 * depth);
     }
   }
 
   function growAxis(opt) {
     const { parent, depth, startBirth, side, axisKey, startAngle } = opt;
-    const maxSegs = depth === 0 ? 60 : depth === 1 ? 16 : depth === 2 ? 6 : 3;
+    const maxSegs = depth === 0 ? 60 : depth === 1 ? 10 : depth === 2 ? 6 : 3;
     let birth = startBirth;
     let angle = startAngle;
     let prev = parent;
@@ -146,22 +146,22 @@ export function growTree(genome, steps, opts = {}) {
 
       // kierunek
       let target = depth === 0 ? G.lean : shapeTarget(depth, side, j);
-      const pull = depth === 0 ? 0.35 : 0.18;
+      const pull = depth === 0 ? 0.35 : 0.12;
       angle += (target - angle) * pull + (r() - 0.5) * G.sway * 2;
-      if (el === "wind") angle += (r() - 0.5) * 0.35;           // wiatr: powykręcany kształt
+      if (el === "wind") angle += (r() - 0.5) * 0.6;            // wiatr: powykręcany kształt
       if (depth === 0) angle = Math.max(-0.45, Math.min(0.45, angle));
 
       // długość
       let len;
-      if (depth === 0) len = Math.min(0.012 + 0.0045 * j, 0.034) * (j > 14 ? Math.max(0.35, 1 - (j - 14) * 0.06) : 1);
-      else len = 0.022 * Math.pow(0.78, depth - 1) * (1 + Math.min(birth, 150) / 150) * (0.85 + r() * 0.3);
-      if (el === "leaf") len *= 0.85;                           // liść: lżejsza sylwetka
-      if (el === "sun") len *= 1.06;
+      if (depth === 0) len = Math.min(0.012 + 0.0045 * j, 0.034) * (j > 12 ? Math.max(0.3, 1 - (j - 12) * 0.07) : 1);
+      else len = 0.022 * Math.pow(0.78, depth - 1) * (1 + Math.min(birth, 60) / 120) * (0.85 + r() * 0.3);
+      if (el === "leaf") len *= 0.8;                            // liść: lżejsza sylwetka
+      if (el === "sun") len *= 1.12;                            // słońce: szersza korona
 
       const seg = {
         id: segId++, parent: prev ? prev.id : -1, depth, angle, len,
         birth, el, entryId: step ? step.entryId : null, day: step ? step.day : null,
-        bend: (r() - 0.5) * (el === "wind" ? 0.5 : 0.18), kids: [], wind: el === "wind"
+        bend: (r() - 0.5) * (el === "wind" ? 0.9 : 0.18), kids: [], wind: el === "wind"
       };
       seg.grown = smooth((Pv - birth) / 2.5);
       if (prev) prev.kids.push(seg.id);
@@ -172,7 +172,7 @@ export function growTree(genome, steps, opts = {}) {
       const young = depth === 0 ? birth > Pv - 18 : (depth === 1 ? birth > Pv - 70 : true);
       const leafy = Pv >= STAGES.LEAVES && young && (depth >= 1 || j >= 1);
       if (leafy) {
-        const n = G.leafPerSeg + 1 + (el === "sun" ? 1 : 0) + (depth === 0 ? -1 : 0);
+        const n = G.leafPerSeg + 1 + (el === "sun" ? 2 : 0) + (el === "leaf" ? -1 : 0) + (depth === 0 ? -1 : 0);
         for (let k = 0; k < n; k++) {
           const lr = rng(hashSeed(genome, "leaf", seg.id, k));
           leaves.push({
@@ -188,19 +188,22 @@ export function growTree(genome, steps, opts = {}) {
       }
 
       // boczne gałęzie
-      const budget = segments.length < 520;
-      if (budget && depth === 0 && birth + 1.5 >= STAGES.BRANCH - 0.01 && j >= 2 && (j % G.branchEvery === 0 || !firstBranchDone)) {
+      const budget = segments.length < 700;
+      // samoczynne oczyszczanie: z wiekiem najniższe gałęzie obumierają i pień się odsłania
+      const pruneBelow = Pv < 50 ? 0 : Math.min(9, Math.floor((Pv - 50) / 30) + 3);
+      if (budget && depth === 0 && j >= pruneBelow && birth + 1.5 >= STAGES.BRANCH - 0.01 && j >= 2 && (j % G.branchEvery === 0 || !firstBranchDone)) {
         firstBranchDone = true;
         const sideL = (Math.floor(j / G.branchEvery) % 2 === 0 ? 1 : -1) * G.sideStart;
-        const spread = G.spread * (el === "sun" ? 1.25 : 1);
+        // wyższe gałęzie (późniejsze) odchodzą bardziej ku górze: korona układa się w kopułę
+        const spread = G.spread * (el === "sun" ? 1.4 : el === "wind" ? 0.9 : 1) * (1 - Math.min(0.35, birth / 260));
         growAxis({ parent: seg, depth: 1, startBirth: Math.max(birth + 0.5, STAGES.BRANCH - 1.5), side: sideL, axisKey: axisKey + "." + j, startAngle: angle + sideL * spread });
         if (el === "seed") {
           growAxis({ parent: seg, depth: 1, startBirth: Math.max(birth + 2, STAGES.BRANCH), side: -sideL, axisKey: axisKey + "." + j + "s", startAngle: angle - sideL * spread * 0.9 });
         }
-      } else if (budget && depth >= 1 && depth < 3 && j >= 1 && (depth === 1 ? j % 2 === 1 || el === "seed" : j % 2 === 0)) {
+      } else if (budget && depth >= 1 && depth < 3 && j >= 1 && (depth === 1 || j % 2 === 0 || el === "seed")) {
         const chance = (depth === 1 ? G.subBranch : 0.3) + (el === "seed" ? 0.3 : 0);
         if (r() < chance) {
-          const sideS = r() < 0.5 ? -1 : 1;
+          const sideS = depth === 1 ? (j % 2 === 0 ? 1 : -1) : (r() < 0.5 ? -1 : 1);
           growAxis({ parent: seg, depth: depth + 1, startBirth: birth + 2 + r() * 2, side: sideS * side, axisKey: axisKey + "." + j, startAngle: angle + sideS * G.spread * 0.7 });
         }
       }
@@ -211,7 +214,7 @@ export function growTree(genome, steps, opts = {}) {
       birth += gap;
     }
     // pąk na końcu osi
-    if (prev && prev.grown > 0.5) buds.push({ seg: prev.id, el: prev.el, entryId: prev.entryId, day: prev.day });
+    if (prev && prev.grown > 0.5) buds.push({ seg: prev.id, el: prev.el, entryId: prev.entryId, day: prev.day, fresh: prev.el === "seed" });
   }
 
   let firstBranchDone = false;
@@ -221,15 +224,21 @@ export function growTree(genome, steps, opts = {}) {
 
   // grubość: model rur (im więcej gałęzi wyżej, tym grubszy odcinek)
   const byId = new Map(segments.map((s) => [s.id, s]));
-  const windFactor = 1 + 0.035 * Math.min(count.wind, 24);
+  const windFactor = 1 + 0.06 * Math.min(count.wind, 24);
   for (let i = segments.length - 1; i >= 0; i--) {
     const s = segments[i];
-    let area = 0.0000018 * s.grown;
-    s.kids.forEach((k) => { const c = byId.get(k); area += c.area || 0; });
-    s.area = area;
+    let n = s.grown;
+    s.kids.forEach((k) => { n += byId.get(k).n || 0; });
+    s.n = n;
   }
   segments.forEach((s) => {
-    s.w = Math.max(0.0012, Math.sqrt(s.area) * 1.15) * (s.depth === 0 ? windFactor : 1 + (windFactor - 1) * 0.5);
+    s.w = 0.0012 * Math.pow(Math.max(1, s.n), 0.52) * (s.depth === 0 ? windFactor : 1 + (windFactor - 1) * 0.5);
+  });
+  // grubość końca odcinka: najgrubsze dziecko (płynne zwężanie)
+  segments.forEach((s) => {
+    let wEnd = s.w * 0.75;
+    s.kids.forEach((k) => { wEnd = Math.max(wEnd, byId.get(k).w); });
+    s.wEnd = Math.min(s.w, wEnd);
   });
 
   // pozycje: każdy odcinek zaczyna się na końcu rodzica
@@ -244,7 +253,7 @@ export function growTree(genome, steps, opts = {}) {
   });
 
   // gęstość korony: słońce gęstnieje, liść przerzedza
-  const density = Math.max(0.35, Math.min(1, 0.78 + 0.05 * recent.sun - 0.09 * recent.leaf + 0.02 * recent.water));
+  const density = Math.max(0.3, Math.min(1, 0.8 + 0.05 * recent.sun - 0.1 * recent.leaf + 0.02 * recent.water));
   const lush = Math.min(1, 0.3 + 0.08 * recent.water + 0.03 * count.water);
   const visibleLeaves = leaves.filter((l) => l.keep < density && Pv >= l.birth).map((l) => {
     const s = byId.get(l.seg);
@@ -264,48 +273,60 @@ export function growTree(genome, steps, opts = {}) {
   // ---------- Pod ziemią ----------
   const roots = [];
   let rootId = 0;
+  // Korzenie: kilka głównych korzeni rozchodzi się od podstawy (pierwszy biegnie w dół),
+  // każdy z bocznymi odgałęzieniami. Woda: głębiej i bardziej pionowo. Kamień: szerzej.
   function rootAxis(opt) {
-    const { parent, depth, startBirth, side, key, startAngle } = opt;
-    const maxSegs = depth === 0 ? 30 : depth === 1 ? 7 : 3;
+    const { parent, depth, startBirth, side, key, startAngle, mainTarget } = opt;
+    const maxSegs = depth === 0 ? 16 : depth === 1 ? 6 : 3;
     let birth = startBirth, angle = startAngle, prev = parent;
     for (let j = 0; j < maxSegs; j++) {
       if (birth > R) break;
       const step = atR(birth);
       const el = step ? (step.words ? step.element : "silent") : null;
       const r = rng(hashSeed(genome, "root", key, j));
-      let target = depth === 0 ? 0 : side * (1.05 * G.rootSpread + 0.1 * depth);
-      if (el === "water") target *= 0.7;            // woda: w głąb
-      if (el === "stone") target = side * 1.45;      // kamień: szerzej
-      angle += (target - angle) * 0.3 + (r() - 0.5) * 0.25;
-      let len = depth === 0 ? 0.006 + 0.001 * Math.min(j, 12) : 0.009 * Math.pow(0.75, depth - 1) * (0.8 + r() * 0.4);
-      if (el === "water") len *= depth === 0 ? 1.35 : 1.15;
-      if (el === "stone") len *= depth === 0 ? 0.8 : 1.3;
+      let target = depth === 0 ? mainTarget : angle + side * 0.15;
+      if (el === "water") target *= 0.6;                      // woda: w głąb
+      if (el === "stone") target = target + Math.sign(target || side || 1) * 0.35; // kamień: szerzej
+      target = Math.max(-1.45, Math.min(1.45, target));
+      angle += (target - angle) * 0.35 + (r() - 0.5) * 0.35;
+      let len = depth === 0 ? 0.0065 + 0.001 * Math.min(j, 10) : 0.0065 * Math.pow(0.7, depth - 1) * (0.8 + r() * 0.4);
+      if (el === "water") len *= 1.3;
+      if (el === "stone") len *= depth === 0 ? 0.95 : 1.25;
       if (el === "silent") len *= 1.1;
       const seg = { id: rootId++, parent: prev ? prev.id : -1, depth, angle, len, birth, el, entryId: step ? step.entryId : null, day: step ? step.day : null, kids: [] };
       seg.grown = smooth((R - birth) / 2);
       if (prev) prev.kids.push(seg.id);
       roots.push(seg);
-      if (depth < 2 && j >= 1 && (depth === 0 ? r() < 0.55 : r() < 0.3)) {
-        const sd = depth === 0 ? (j % 2 === 0 ? 1 : -1) : side;
-        rootAxis({ parent: seg, depth: depth + 1, startBirth: birth + 1 + r() * 1.5, side: sd, key: key + "." + j, startAngle: angle + sd * 0.9 });
+      if (depth < 2 && j >= 1 && j % 2 === 0 && r() < (depth === 0 ? 0.7 : 0.35)) {
+        const sd = r() < 0.5 ? -1 : 1;
+        rootAxis({ parent: seg, depth: depth + 1, startBirth: birth + 1.5 + r() * 1.5, side: sd, key: key + "." + j, startAngle: angle + sd * (0.6 + r() * 0.4) });
       }
       prev = seg;
-      birth += depth === 0 ? 1.6 + 0.35 * j : 2.4 + 0.6 * j;
+      birth += depth === 0 ? 1.6 + 0.4 * j : 2.6 + 0.7 * j;
     }
   }
-  if (R >= 1.5) rootAxis({ parent: null, depth: 0, startBirth: 1.5, side: 0, key: "R", startAngle: 0 });
+  if (R >= 1.5) {
+    const mains = 5;
+    const order = [0, -1, 1, -2, 2];
+    order.forEach((k, i) => {
+      const rr = rng(hashSeed(genome, "rootmain", i));
+      const target = k === 0 ? 0.05 : Math.sign(k) * (0.55 * Math.abs(k) * G.rootSpread + rr() * 0.2);
+      rootAxis({ parent: null, depth: 0, startBirth: 1.5 + i * 2.2, side: Math.sign(k) || 1, key: "R" + i, startAngle: target * 0.7, mainTarget: target });
+    });
+    void mains;
+  }
 
   const rById = new Map(roots.map((s) => [s.id, s]));
   for (let i = roots.length - 1; i >= 0; i--) {
     const s = roots[i];
-    let area = 0.0000006 * s.grown;
-    s.kids.forEach((k) => { area += rById.get(k).area || 0; });
-    s.area = area;
-    s.w = Math.max(0.0007, Math.sqrt(area) * 1.0);
+    let n = s.grown;
+    s.kids.forEach((k) => { n += rById.get(k).n || 0; });
+    s.n = n;
+    s.w = 0.0007 * Math.pow(Math.max(1, n), 0.45);
   }
   roots.forEach((s) => {
     const p = s.parent >= 0 ? rById.get(s.parent) : null;
-    s.x0 = p ? p.x1 : 0; s.y0 = p ? p.y1 : 0.002;
+    s.x0 = p ? p.x1 : 0; s.y0 = p ? p.y1 : 0.003;
     const L = s.len * s.grown;
     s.x1 = s.x0 + Math.sin(s.angle) * L;
     s.y1 = s.y0 + Math.cos(s.angle) * L;

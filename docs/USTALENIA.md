@@ -434,7 +434,9 @@ Pozostało: prompt do generowania tekstów dla projektu Claude użytkownika (mo�
 
 ## Etap 1. Próbki stylu — ✅ ZAMKNIĘTE
 
-**Wybrany styl: A, Wycinanka (Pappersklipp).**
+**Wybrany styl: ~~A, Wycinanka~~ → zmiana na C, Mgła i światło (Dimma och ljus)** (decyzja po etapie 3).
+- Miękkie przejścia, głębia z warstw lasu ginących we mgle, światło i poświata, lekko świecące korzenie.
+- Pierwotny wybór A (zachowany dla historii):
 - Płaskie warstwy jak wycięte z papieru, delikatny cień między warstwami, ziarno papieru.
 - Ograniczona paleta, czyste kształty, niebo w poziomych pasach.
 - Krój pisma: Albert Sans (lekki dla głosu drzewa).
