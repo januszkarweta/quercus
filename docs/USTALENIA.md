@@ -471,3 +471,9 @@ Próbki: https://claude.ai/artifact/5j5xuxZHZYYM7XB9n96eMx
     - smukłe (slender): „szuka światła”,
     - płaczące (weeping): „nauczyło się elastyczności”,
     - okrągłe (round): „buduje stabilność”.
+
+**Liście zależne od genów (uzupełnienie wytycznych):**
+- kształt liścia: migdałowy, lancetowaty (wąski), okrągły, sercowaty lub klapowany,
+- odcień zieleni: od żółtozielonego do niebieskozielonego,
+- kolor jesienny: żółty, złoty, pomarańczowy, czerwony lub brązowy,
+- jesienią większość liści zmienia kolor (im później jesienią, tym więcej), pojedyncze zostają zielone.

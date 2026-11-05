@@ -51,17 +51,43 @@ export function palette(look) {
   return out;
 }
 
-/** Kolory liści. Pierwszy rok chroniony: jesienią przebarwienie, zimą ciemniejsza, czerwonawa zieleń. */
+/** Zieleń i jesienne barwy liści zależą od genów. */
+const GREENS = ["#8aa03e", "#5f8f3e", "#3f6e3a", "#4f7a62"];
+const AUTUMN = {
+  yellow: ["#e6c447", "#d9b23a", "#f0d66a"],
+  gold: ["#d9a93a", "#e3bd4f", "#c99332"],
+  orange: ["#e0902f", "#d47a2a", "#e8a84a"],
+  red: ["#c4452e", "#a8342c", "#d9653a"],
+  bronze: ["#b07a3a", "#9a6232", "#c79a52"]
+};
+function geneGreen(g) {
+  const x = g.leafHue * (GREENS.length - 1), i = Math.floor(x);
+  return mix(GREENS[i], GREENS[Math.min(GREENS.length - 1, i + 1)], x - i);
+}
+/** Kolor jednego liścia. look.autumn: 0 początek jesieni .. 1 późna jesień. */
+export function leafColor(l, look, tree) {
+  const g = tree.genes;
+  const green = mix(geneGreen(g), "#3f8a3a", tree.lush * 0.35);
+  const varied = mix(green, l.tone < 0.5 ? "#2f5a2e" : "#a8b84e", Math.abs(l.tone - 0.5) * 0.5);
+  let c;
+  if (look.season === "autumn") {
+    const progress = look.autumn == null ? 0.75 : look.autumn;
+    const turned = Math.max(0, Math.min(1, progress * 1.45 - 0.08 - l.keep * 0.5 + (l.tone - 0.5) * 0.3));
+    const pal = AUTUMN[g.autumnTone] || AUTUMN.yellow;
+    const fall = pal[Math.floor(l.tone * pal.length) % pal.length];
+    c = mix(varied, mix(fall, "#e8cf6a", turned < 0.6 ? 0.25 : 0), turned * turned * (3 - 2 * turned));
+  } else if (look.season === "winter") {
+    c = mix(mix(varied, "#4d3c36", 0.55), "#3a4636", l.tone * 0.4);
+  } else if (look.season === "spring") {
+    c = mix(varied, "#b5cf6a", 0.3);
+  } else c = varied;
+  return mix(mix("#121826", c, 0.3), c, look.light);
+}
+/** Paleta do drobnych elementów (opadłe liście, liście niesione wiatrem). */
 export function leafColors(look, tree) {
   const g = tree.genes;
-  const greenA = mix("#6f8a3e", "#4f7a4a", g.leafHue);
-  const greenB = mix("#8fa04a", "#6e9455", g.leafHue);
-  const lushA = mix(greenA, "#3f8a3a", tree.lush * 0.7);
-  let cols;
-  if (look.season === "autumn") cols = [lushA, greenB, "#b49a3e", "#c98d42", "#b5603a"];
-  else if (look.season === "winter") cols = ["#3f4c37", "#4d3c36", "#5a4039", "#3b473a"];
-  else cols = [lushA, greenB, mix(greenB, "#c8d27a", 0.3)];
-  return cols.map((c) => mix(mix("#121826", c, 0.3), c, look.light));
+  if (look.season === "autumn") return (AUTUMN[g.autumnTone] || AUTUMN.yellow).map((c) => mix(mix("#121826", c, 0.3), c, look.light));
+  return [0.2, 0.5, 0.8].map((tone) => leafColor({ tone, keep: 0.5 }, look, tree));
 }
 
 // ---------- Kształty ----------
@@ -82,14 +108,43 @@ function spruce(ctx, x, y, h) {
   for (let k = 4; k >= 1; k--) { const y2 = y - h + (h * k) / 4.4, w2 = (w * k) / 4; ctx.lineTo(x - w2 * 0.45, y2); ctx.lineTo(x - w2, y2); }
   ctx.closePath();
 }
-export function leafPath(ctx, x, y, a, len, wide, pointy = 0.5) {
-  const tx = x + Math.sin(a) * len, ty = y - Math.cos(a) * len;
-  const nx = Math.cos(a) * len * wide, ny = Math.sin(a) * len * wide;
-  const k = 0.45 + pointy * 0.2;
-  const mx = x + (tx - x) * k, my = y + (ty - y) * k;
-  ctx.beginPath(); ctx.moveTo(x, y);
-  ctx.quadraticCurveTo(mx + nx, my + ny, tx, ty);
-  ctx.quadraticCurveTo(mx - nx, my - ny, x, y);
+export function leafPath(ctx, x, y, a, len, wide, pointy = 0.5, shape = "almond") {
+  if (shape === "almond" || !shape) {
+    const tx = x + Math.sin(a) * len, ty = y - Math.cos(a) * len;
+    const nx = Math.cos(a) * len * wide, ny = Math.sin(a) * len * wide;
+    const k = 0.45 + pointy * 0.2;
+    const mx = x + (tx - x) * k, my = y + (ty - y) * k;
+    ctx.beginPath(); ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(mx + nx, my + ny, tx, ty);
+    ctx.quadraticCurveTo(mx - nx, my - ny, x, y);
+    ctx.closePath();
+    return;
+  }
+  // pozostałe kształty rysowane w układzie liścia (czubek w górę), potem obracane
+  const c = Math.cos(a), s = Math.sin(a);
+  const P = (px, py) => [x + (px * c - py * s) * len, y + (px * s + py * c) * len];
+  ctx.beginPath();
+  if (shape === "lance") {
+    const w = 0.13 + wide * 0.12;
+    let p = P(0, 0); ctx.moveTo(p[0], p[1]);
+    let c1 = P(w * 1.6, -0.45), e = P(0, -1); ctx.quadraticCurveTo(c1[0], c1[1], e[0], e[1]);
+    c1 = P(-w * 1.6, -0.45); p = P(0, 0); ctx.quadraticCurveTo(c1[0], c1[1], p[0], p[1]);
+  } else if (shape === "round") {
+    const pts = []; for (let i = 0; i <= 24; i++) { const th = (i / 24) * Math.PI * 2; pts.push(P(Math.sin(th) * 0.42, -0.5 + Math.cos(th) * 0.48 - (Math.cos(th) > 0.9 ? 0.04 : 0))); }
+    ctx.moveTo(pts[0][0], pts[0][1]); pts.forEach((q) => ctx.lineTo(q[0], q[1]));
+  } else if (shape === "heart") {
+    let p = P(0, -0.12); ctx.moveTo(p[0], p[1]);
+    let c1 = P(0.22, 0.05), c2 = P(0.55, -0.15), e = P(0.4, -0.5); ctx.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], e[0], e[1]);
+    c1 = P(0.3, -0.75); e = P(0, -1); ctx.quadraticCurveTo(c1[0], c1[1], e[0], e[1]);
+    c1 = P(-0.3, -0.75); e = P(-0.4, -0.5); ctx.quadraticCurveTo(c1[0], c1[1], e[0], e[1]);
+    c1 = P(-0.55, -0.15); c2 = P(-0.22, 0.05); p = P(0, -0.12); ctx.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], p[0], p[1]);
+  } else { // lobed: łagodnie klapowany
+    const pts = [[0, 0], [0.18, -0.12], [0.42, -0.22], [0.3, -0.38], [0.48, -0.55], [0.26, -0.62], [0.24, -0.82], [0, -1], [-0.24, -0.82], [-0.26, -0.62], [-0.48, -0.55], [-0.3, -0.38], [-0.42, -0.22], [-0.18, -0.12], [0, 0]];
+    const Q = pts.map(([px, py]) => P(px, py));
+    ctx.moveTo(Q[0][0], Q[0][1]);
+    for (let i = 1; i < Q.length; i++) { const m = [(Q[i - 1][0] + Q[i][0]) / 2, (Q[i - 1][1] + Q[i][1]) / 2]; ctx.quadraticCurveTo(Q[i - 1][0], Q[i - 1][1], m[0], m[1]); }
+    ctx.lineTo(Q[Q.length - 1][0], Q[Q.length - 1][1]);
+  }
   ctx.closePath();
 }
 function fogBand(ctx, W, y, h, color, a) {
@@ -308,8 +363,8 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
     const rl = rng(hashSeed("fallen", tree.genes.leafHue));
     for (let i = 0; i < tree.fallen; i++) {
       const lx = gx + (rl() - 0.5) * W * 0.5, ly = groundAt(lx) - rl() * H * 0.004;
-      ctx.fillStyle = cols[Math.min(cols.length - 1, Math.max(0, cols.length - 1 - Math.floor(rl() * 2)))];
-      leafPath(ctx, lx, ly, 1.3 + rl() * 0.6, H * 0.01, 0.4); ctx.fill();
+      ctx.fillStyle = cols[Math.floor(rl() * cols.length) % cols.length];
+      leafPath(ctx, lx, ly, 1.3 + rl() * 0.6, H * 0.01, 0.4, 0.5, tree.genes.leafShape); ctx.fill();
     }
   }
 
@@ -387,7 +442,7 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
     const c = tree.cotyledons, p = pos.get(0), at = p ? M(...p.end) : M(c.x, c.y), sz = c.size * ppu;
     [-1, 1].forEach((side) => {
       ctx.save(); ctx.translate(at[0], at[1]); ctx.rotate(side * 1.05 + Math.sin(t * 0.8) * 0.03);
-      ctx.fillStyle = cols[0]; ctx.beginPath(); ctx.ellipse(0, -sz * 0.9, sz * 0.55, sz, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = leafColor({ tone: 0.3, keep: 1 }, { ...look, season: look.season === "winter" ? "winter" : "summer" }, tree); ctx.beginPath(); ctx.ellipse(0, -sz * 0.9, sz * 0.55, sz, 0, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = rgba(pal.rim, 0.25); ctx.beginPath(); ctx.ellipse(-sz * 0.12, -sz * 1.05, sz * 0.25, sz * 0.5, 0, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     });
@@ -425,24 +480,23 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
     const q = [q0[0] + Math.sin(ang) * st, q0[1] - Math.cos(ang) * st];
     ctx.globalAlpha = 0.9; ctx.strokeStyle = pal.trunk; ctx.lineWidth = Math.max(0.6, size * 0.06);
     ctx.beginPath(); ctx.moveTo(q0[0], q0[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
-    const col = look.season === "autumn"
-      ? cols[Math.min(cols.length - 1, Math.floor(Math.min(0.999, l.tone * 0.6 + l.keep * 0.45) * cols.length))]
-      : cols[Math.floor(l.tone * cols.length) % cols.length];
+    const col = leafColor(l, look, tree);
+    const shape = tree.genes.leafShape;
     ctx.globalAlpha = 0.94; ctx.fillStyle = col;
-    leafPath(ctx, q[0], q[1], ang, size, tree.genes.leafWide, tree.genes.leafPointy); ctx.fill();
+    leafPath(ctx, q[0], q[1], ang, size, tree.genes.leafWide, tree.genes.leafPointy, shape); ctx.fill();
     // środkowy nerw i jaśniejsza strona od światła
     ctx.globalAlpha = 0.25; ctx.strokeStyle = night ? "#0b0f18" : "#2f3a1e"; ctx.lineWidth = 0.6;
     ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[0] + Math.sin(ang) * size * 0.85, q[1] - Math.cos(ang) * size * 0.85); ctx.stroke();
     if ((light.x - q[0]) * Math.sin(ang) > 0) {
       ctx.globalAlpha = night ? 0.2 : 0.28; ctx.fillStyle = night ? "#dbe6f7" : "#fff0cc";
-      leafPath(ctx, q[0], q[1], ang, size * 0.62, tree.genes.leafWide * 0.5, tree.genes.leafPointy); ctx.fill();
+      leafPath(ctx, q[0], q[1], ang, size * 0.62, tree.genes.leafWide * 0.5, tree.genes.leafPointy, shape === "lobed" || shape === "round" || shape === "heart" ? "almond" : shape); ctx.fill();
     }
     drawn.push({ q, ang, size, l });
   });
   ctx.globalAlpha = 1;
   if (look.frost) {
     ctx.strokeStyle = rgba(pal.snow, 0.4); ctx.lineWidth = 0.6;
-    drawn.forEach((d) => { if (d.l.keep > 0.3) return; leafPath(ctx, d.q[0], d.q[1], d.ang, d.size, tree.genes.leafWide, tree.genes.leafPointy); ctx.stroke(); });
+    drawn.forEach((d) => { if (d.l.keep > 0.3) return; leafPath(ctx, d.q[0], d.q[1], d.ang, d.size, tree.genes.leafWide, tree.genes.leafPointy, tree.genes.leafShape); ctx.stroke(); });
   }
 
   // pąki: zimą i wiosną wszystkie; nasiono daje świeże pąki o każdej porze

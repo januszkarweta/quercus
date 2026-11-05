@@ -49,7 +49,10 @@ export function genes(genome) {
     barkHue: r(),
     leafHue: r(),
     flowerHue: r(),
-    rootSpread: 0.85 + r() * 0.35
+    rootSpread: 0.85 + r() * 0.35,
+    // kształt liścia i jesienny kolor też zależą od genów
+    leafShape: ["almond", "lance", "round", "heart", "lobed"][Math.floor(r() * 5)],
+    autumnTone: ["yellow", "gold", "orange", "red", "bronze"][Math.floor(r() * 5)]
   };
 }
 
