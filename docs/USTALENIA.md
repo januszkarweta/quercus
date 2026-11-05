@@ -481,3 +481,5 @@ Próbki: https://claude.ai/artifact/5j5xuxZHZYYM7XB9n96eMx
 **Równowaga konarów:** konary rozkładają się mniej więcej po równo na obie strony (nowy konar wyrasta tam, gdzie żywych konarów jest mniej). Wiatr nie zabiera gałęzi jednej stronie, tylko delikatnie wydłuża konary po stronie zawietrznej i lekko pochyla pień; pochylone drzewo równoważy się dłuższymi konarami po przeciwnej stronie.
 
 **Korzenie dorosłego drzewa:** wachlarz 5–9 głównych korzeni rozchodzących się na obie strony (boczne najpierw płytko i szeroko, środkowe prosto w głąb). Z wiekiem dochodzą kolejne, korzenie są grubsze przy nasadzie, a ich zasięg rośnie razem z drzewem, więc dorosłe drzewo stoi w gruncie solidnie.
+
+**Okrągła korona i łuki konarów:** konary rosną łukami jak w naturze: wychodzą z pnia na boki i stopniowo zakręcają ku górze, a ich końce (i gałązki) układają się na obrysie korony, więc pień i konary razem tworzą zaokrągloną sylwetkę. Obrys zależy od temperamentu: okrągłe (koło), rozłożyste (szeroka elipsa), smukłe (wysoka elipsa), płaczące (łuki w dół). Korona rośnie razem z drzewem.

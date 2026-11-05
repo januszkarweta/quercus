@@ -139,6 +139,10 @@ export function growTree(genome, steps, opts = {}) {
     seg.grown = smooth((Pv - seg.birth) / 2.5);
     if (o.parentSeg) o.parentSeg.kids.push(seg.id);
     seg.parent = o.parentSeg ? o.parentSeg.id : -1;
+    // bieżące położenie końca (do obrysu korony)
+    const L = seg.len * seg.grown;
+    seg.ex = (o.parentSeg ? o.parentSeg.ex : 0) + Math.sin(seg.angle) * L;
+    seg.ey = (o.parentSeg ? o.parentSeg.ey : 0) - Math.cos(seg.angle) * L;
     delete seg.parentSeg;
     segments.push(seg);
     return seg;
@@ -171,11 +175,16 @@ export function growTree(genome, steps, opts = {}) {
     for (let j = 0; j < o.maxSegs && birth <= Pv; j++) {
       const step = atP(birth), el = step ? step.element : null;
       const r = rng(hashSeed(genome, o.key, j));
-      angle = o.curve(j, angle) + (r() - 0.5) * (el === "wind" ? 0.22 : 0.08);
       let len = o.baseLen * (0.88 + r() * 0.24) * Math.pow(0.93, j);
       len *= el === "sun" ? 1.12 : el === "water" ? 1.08 : el === "leaf" ? 0.85 : 1;
       if (o.lengthBias) len *= o.lengthBias;
       len *= 0.55 + 0.45 * smooth((birth - 14) / 50);   // młode drzewo: krótkie gałęzie, widoczny potencjał
+      angle = o.curve(j, angle, len, birth) + (r() - 0.5) * (el === "wind" ? 0.18 : 0.06);
+      // korona ma obrys: gałąź przestaje się wydłużać, gdy dotknie krawędzi korony
+      if (o.env && j >= 1 && prev) {
+        const px = prev.ex + Math.sin(angle) * len, py = prev.ey - Math.cos(angle) * len;
+        if (outside(px, py, o.env)) break;
+      }
       const seg = addSeg({ parentSeg: prev, depth: o.depth, axis: o.key, j, angle, len, birth, el, entryId: step && step.entryId, day: step && step.day, bend: (r() - 0.5) * (el === "wind" ? 0.35 : 0.15) });
       made.push(seg);
       prev = seg;
@@ -184,16 +193,32 @@ export function growTree(genome, steps, opts = {}) {
     return made;
   }
 
-  // temperament: kąt startowy i krzywizna konarów
-  function limbCurve(side) {
-    switch (G.shape) {
-      case "slender": return (j, a) => a - side * 0.035;                      // szuka światła: do góry
-      case "weeping": return (j, a) => (j >= 2 ? clamp(a + side * 0.15, -2.5, 2.5) : a - side * 0.02); // łuk, potem w dół
-      case "round": return (j, a) => a - side * (j >= 3 ? 0.035 : 0.005);      // kopuła
-      default: return (j, a) => a - side * 0.012;                              // szeroko, łagodnie
-    }
+  // ---------- korona: obrys i łuki konarów ----------
+  // Konary rosną łukami jak w naturze: wychodzą z pnia na boki i stopniowo zakręcają ku górze,
+  // a ich końce układają się na obrysie korony (koło albo elipsa zależna od temperamentu).
+  const CROWN = {
+    round: { sx: 1.0, sy: 1.0, c: 0.6, k: 1.0 },
+    spreading: { sx: 1.35, sy: 0.82, c: 0.64, k: 0.7 },
+    slender: { sx: 0.62, sy: 1.15, c: 0.6, k: 1.35 },
+    weeping: { sx: 1.2, sy: 0.92, c: 0.56, k: 1.6 }
+  }[G.shape];
+  const trunkHAt = (b) => { let h = 0; trunk.forEach((t) => { if (t.birth <= b) h += t.len * Math.cos(t.angle); }); return Math.max(0.04, h); };
+  const tTop = trunk.length ? trunk[trunk.length - 1] : null;
+  const tH = tTop ? Math.max(0.04, -tTop.ey) : 0.04;
+  const crownR = tH * 0.52;
+  const envFor = (scale) => ({ cx: tTop ? tTop.ex * 0.5 : 0, cy: -tH * CROWN.c, rx: crownR * CROWN.sx * scale, ry: crownR * CROWN.sy * scale });
+  function outside(x, y, e) { const dx = (x - e.cx) / e.rx, dy = (y - e.cy) / e.ry; return dx * dx + dy * dy > 1; }
+  // stała krzywizna = łuk koła; promień łuku z rozmiaru drzewa w dniu narodzin gałęzi (stare części się nie zmieniają)
+  function arcCurve(side, strength = 1) {
+    return (j, a, len, birth) => {
+      const kappa = (CROWN.k * strength) / (Math.max(0.35, trunkHAt(birth)) * 1.5);
+      if (G.shape === "weeping" && j >= 2) return clamp(a + side * kappa * len * 1.4, -2.6, 2.6);  // łuk w dół
+      const next = a - side * kappa * len;
+      const floor = { round: 0.32, spreading: 0.5, slender: 0.14, weeping: 0.3 }[G.shape];     // końce patrzą w górę i na zewnątrz
+      return side > 0 ? Math.max(next, floor) : Math.min(next, -floor);
+    };
   }
-  const limbAngle = { spreading: 1.15, slender: 0.55, weeping: 0.95, round: 0.92 }[G.shape];
+  const limbAngle = { spreading: 1.35, slender: 0.78, weeping: 1.05, round: 1.2 }[G.shape];
 
   // Kolejne konary wyrastają coraz wyżej. Z wiekiem drzewo samo zrzuca najniższe konary
   // (zostaje po nich zabliźniony ślad), a pień pod koroną się odsłania.
@@ -242,7 +267,7 @@ export function growTree(genome, steps, opts = {}) {
       const lengthBias = (side === G.windDir ? 1 + windy * 0.35 : 1 - windy * 0.2) * counter * (0.85 + r() * 0.3);
       const limb = axis({
         parentSeg: trunk[jAttach], depth: 1, birth: lb, side, angle: startAngle,
-        maxSegs: 14, baseLen: 0.042, key: "L" + k, curve: limbCurve(side), lengthBias,
+        maxSegs: 16, baseLen: 0.042, key: "L" + k, curve: arcCurve(side), lengthBias, env: envFor(0.95 + r() * 0.12),
         gap: (j) => 1.6 + 0.45 * j
       });
       limbs.push({ k, side, segs: limb, jAttach });
@@ -259,7 +284,7 @@ export function growTree(genome, steps, opts = {}) {
         const sec = axis({
           parentSeg: ls, depth: 2, birth: ls.birth + 2 + rr() * 2, side: sSide,
           angle: ls.angle + sSide * (0.5 + rr() * 0.35), maxSegs: 6, baseLen: 0.024,
-          key: "S" + k + "." + j, curve: (jj, a) => (G.shape === "weeping" ? clamp(a + side * 0.12, -2.6, 2.6) : a - sSide * 0.04),
+          key: "S" + k + "." + j, curve: arcCurve(side, 0.8), env: envFor(1.06),
           gap: (jj) => 2 + 0.6 * jj
         });
         sec.forEach((ss, jj) => {
@@ -267,7 +292,7 @@ export function growTree(genome, steps, opts = {}) {
           const tSide = rr() < 0.5 ? -1 : 1;
           axis({
             parentSeg: ss, depth: 3, birth: ss.birth + 2, side: tSide, angle: ss.angle + tSide * 0.6,
-            maxSegs: 2, baseLen: 0.011, key: "T" + k + "." + j + "." + jj, curve: (q, a) => a, gap: () => 2.5
+            maxSegs: 2, baseLen: 0.011, key: "T" + k + "." + j + "." + jj, curve: (q, a) => a, gap: () => 2.5, env: envFor(1.12)
           });
         });
       });
@@ -284,7 +309,7 @@ export function growTree(genome, steps, opts = {}) {
       const young = t.birth < STAGES.BRANCH;
       if (!young && rr() > 0.5) return;
       const sd = young ? (t.j % 2 === 0 ? 1 : -1) * G.sideStart : (rr() < 0.5 ? -1 : 1);
-      axis({ parentSeg: t, depth: 2, birth: t.birth + 0.8, side: sd, angle: t.angle + sd * (0.6 + rr() * 0.35), maxSegs: young ? 1 : 3, baseLen: young ? 0.016 : 0.018, key: "W" + t.j, curve: (q, a) => a - sd * 0.05, gap: (q) => 2 + q });
+      axis({ parentSeg: t, depth: 2, birth: t.birth + 0.8, side: sd, angle: t.angle + sd * (0.6 + rr() * 0.35), maxSegs: young ? 1 : 3, baseLen: young ? 0.016 : 0.018, key: "W" + t.j, curve: (q, a) => a - sd * 0.05, gap: (q) => 2 + q, env: t.birth < STAGES.BRANCH ? null : envFor(1.06) });
     });
   }
 
