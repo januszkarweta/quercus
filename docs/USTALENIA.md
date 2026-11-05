@@ -483,3 +483,5 @@ Próbki: https://claude.ai/artifact/5j5xuxZHZYYM7XB9n96eMx
 **Korzenie dorosłego drzewa:** wachlarz 5–9 głównych korzeni rozchodzących się na obie strony (boczne najpierw płytko i szeroko, środkowe prosto w głąb). Z wiekiem dochodzą kolejne, korzenie są grubsze przy nasadzie, a ich zasięg rośnie razem z drzewem, więc dorosłe drzewo stoi w gruncie solidnie.
 
 **Okrągła korona i łuki konarów:** konary rosną łukami jak w naturze: wychodzą z pnia na boki i stopniowo zakręcają ku górze, a ich końce (i gałązki) układają się na obrysie korony, więc pień i konary razem tworzą zaokrągloną sylwetkę. Obrys zależy od temperamentu: okrągłe (koło), rozłożyste (szeroka elipsa), smukłe (wysoka elipsa), płaczące (łuki w dół). Korona rośnie razem z drzewem.
+
+**Ocena użytkownika po etapie 3:** „Piękne nie są, ale do testu wystarczy.” Wygląd drzewa jest zaakceptowany do 30-dniowego testu. **Do wersji 1.1:** dopracowanie piękna i harmonii drzewa (proporcje korony, łuki konarów, gęstość liści) według wytycznych powyżej.
