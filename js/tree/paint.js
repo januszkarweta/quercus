@@ -364,9 +364,9 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
       ctx.fillStyle = pal.trunk; ctx.beginPath(); ctx.ellipse(q[0], q[1], w * 0.56, w * 0.3, p.a + Math.PI / 2, 0, Math.PI * 2); ctx.fill();
     } else {
       const ox = (kn.side || 1) * w * 0.18;
-      ctx.fillStyle = mix(pal.trunk, "#000000", 0.25); ctx.beginPath(); ctx.ellipse(q[0] + ox, q[1], w * 0.16 * (1 + kn.k), w * 0.26 * (1 + kn.k), p.a, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = rgba(pal.rim, rimA * 0.8); ctx.lineWidth = 0.8;
-      ctx.beginPath(); ctx.ellipse(q[0] + ox, q[1], w * 0.2 * (1 + kn.k), w * 0.3 * (1 + kn.k), p.a, -0.6, 1.2); ctx.stroke();
+      ctx.fillStyle = mix(pal.trunk, "#000000", 0.12); ctx.beginPath(); ctx.ellipse(q[0] + ox, q[1], w * 0.09 * (1 + kn.k), w * 0.15 * (1 + kn.k), p.a, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = rgba(pal.rim, rimA * 0.5); ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.ellipse(q[0] + ox, q[1], w * 0.12 * (1 + kn.k), w * 0.18 * (1 + kn.k), p.a, -0.6, 1.2); ctx.stroke();
     }
   });
 

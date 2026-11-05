@@ -192,11 +192,19 @@ export function growTree(genome, steps, opts = {}) {
   }
   const limbAngle = { spreading: 1.15, slender: 0.55, weeping: 0.95, round: 0.92 }[G.shape];
 
-  const schedule = [14, 20, 28, 39, 55, 78];
+  // Kolejne konary wyrastają coraz wyżej. Z wiekiem drzewo samo zrzuca najniższe konary
+  // (zostaje po nich zabliźniony ślad), a pień pod koroną się odsłania.
+  const schedule = [14, 20, 28, 39, 55, 78, 105, 140, 185, 240, 300];
   const limbs = [];
+  // wysokość węzłów pnia (bez kołysania) i wysokość odsłoniętego pnia
+  const nodeH = [];
+  { let h = 0; trunk.forEach((t) => { h += t.len * t.grown * Math.cos(t.angle); nodeH.push(h); }); }
+  const trunkH = nodeH.length ? nodeH[nodeH.length - 1] : 0;
+  const clearH = trunkH * Math.min(0.33, Math.max(0, (Pv - 40) / 380));
   if (trunk.length) {
     const usedJ = new Set();
-    for (let k = 0; k < G.maxLimbs; k++) {
+    let kept = 0;
+    for (let k = 0; k < schedule.length && kept < G.maxLimbs + 2; k++) {
       const r = rng(hashSeed(genome, "limb", k));
       const lb = schedule[k] + (r() - 0.5) * 3;
       if (lb > Pv) break;
@@ -207,6 +215,12 @@ export function growTree(genome, steps, opts = {}) {
       while (usedJ.has(jAttach) && jAttach < trunk.length - 1) jAttach++;
       if (usedJ.has(jAttach)) continue;
       usedJ.add(jAttach);
+      // konar poniżej odsłoniętej części pnia już opadł: zostaje tylko blizna
+      if (nodeH[jAttach] < clearH) {
+        knots.push({ seg: trunk[jAttach].id, at: 1, k: 0.4, kind: "scar", side: (k % 2 === 0 ? 1 : -1) * G.sideStart });
+        continue;
+      }
+      kept++;
       // strona: naprzemiennie, ale nieregularnie; po wietrznej historii częściej strona zawietrzna
       let side = (k % 2 === 0 ? 1 : -1) * G.sideStart;
       if (r() < 0.25) side = -side;
