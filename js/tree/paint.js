@@ -240,18 +240,22 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
     ctx.beginPath(); ctx.ellipse(rsx() * W, gy + H * (0.07 + rsx() * 0.26), H * (0.006 + rsx() * 0.01), H * (0.004 + rsx() * 0.006), rsx(), 0, Math.PI * 2); ctx.fill();
   }
 
-  // korzenie: delikatnie świecą
+  // korzenie: ciemne drewno z delikatnie świecącym rdzeniem; przy nasadzie przechodzą w pień
+  const rootPaths = tree.roots.filter((r) => r.grown > 0.01).map((r) => [M(r.x0, r.y0), M(r.cx, r.cy), M(r.x1, r.y1), Math.max(1, r.w * ppu), Math.max(0.6, (r.wEnd || r.w) * ppu)]);
+  ctx.fillStyle = mix(pal.trunk, pal.soilTop, 0.35);
+  rootPaths.forEach(([a, c, e, w0, w1]) => { taper(ctx, a, c, e, w0, w1); ctx.fill(); });
   ctx.save();
-  ctx.shadowColor = night ? "rgba(170,210,255,0.8)" : "rgba(240,205,140,0.8)"; ctx.shadowBlur = H * 0.01;
-  ctx.fillStyle = night ? "rgba(185,215,240,0.6)" : "rgba(235,200,140,0.7)";
-  const rById = new Map(tree.roots.map((s) => [s.id, s]));
-  tree.roots.forEach((s) => {
-    if (s.grown <= 0.01) return;
-    let wEnd = s.w * 0.7;
-    s.kids.forEach((k) => { wEnd = Math.max(wEnd, rById.get(k).w); });
-    taper(ctx, M(s.x0, s.y0), M(s.cx, s.cy), M(s.x1, s.y1), Math.max(0.9, s.w * ppu), Math.max(0.5, Math.min(s.w, wEnd) * ppu)); ctx.fill();
-  });
+  ctx.shadowColor = night ? "rgba(170,210,255,0.8)" : "rgba(240,205,140,0.75)"; ctx.shadowBlur = H * 0.008;
+  ctx.fillStyle = night ? "rgba(185,215,240,0.55)" : "rgba(235,200,140,0.6)";
+  rootPaths.forEach(([a, c, e, w0, w1]) => { taper(ctx, a, c, e, Math.max(0.6, w0 * 0.45), Math.max(0.4, w1 * 0.45)); ctx.fill(); });
   ctx.restore();
+  // nasada pnia pod ziemią: łagodne przejście w korzenie
+  if (tree.segments.length && tree.roots.length) {
+    const bw = tree.segments[0].w * ppu;
+    const cg = ctx.createLinearGradient(0, gy, 0, gy + bw * 0.9);
+    cg.addColorStop(0, pal.trunk); cg.addColorStop(1, rgba(mix(pal.trunk, pal.soilTop, 0.35), 0));
+    ctx.fillStyle = cg; ctx.beginPath(); ctx.ellipse(gx, gy, bw * 0.75, bw * 0.9, 0, 0, Math.PI); ctx.fill();
+  }
 
   // nasionko, dopóki kiełek jest mały
   if (tree.P > 0 && tree.P < 9) {
@@ -347,6 +351,25 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
     ctx.beginPath(); ctx.moveTo(a[0] + dx * w * 0.36, a[1]); ctx.quadraticCurveTo(c[0] + dx * w * 0.34, c[1], e[0] + dx * (s.wEnd || s.w) * ppu * 0.32, e[1]); ctx.stroke();
   });
 
+  // zgrubienia po dawnych gałęziach i ślady trudnych dni
+  (tree.knots || []).forEach((kn) => {
+    const p = pos.get(kn.seg); if (!p) return;
+    const sg = tree.segments[kn.seg]; if (!sg) return;
+    const u = kn.at, iu = 1 - u;
+    const x = iu * iu * p.start[0] + 2 * iu * u * p.ctrl[0] + u * u * p.end[0];
+    const y = iu * iu * p.start[1] + 2 * iu * u * p.ctrl[1] + u * u * p.end[1];
+    const q = M(x, y), w = sg.w * ppu;
+    if (w < 2) return;
+    if (kn.kind === "node") {
+      ctx.fillStyle = pal.trunk; ctx.beginPath(); ctx.ellipse(q[0], q[1], w * 0.56, w * 0.3, p.a + Math.PI / 2, 0, Math.PI * 2); ctx.fill();
+    } else {
+      const ox = (kn.side || 1) * w * 0.18;
+      ctx.fillStyle = mix(pal.trunk, "#000000", 0.25); ctx.beginPath(); ctx.ellipse(q[0] + ox, q[1], w * 0.16 * (1 + kn.k), w * 0.26 * (1 + kn.k), p.a, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = rgba(pal.rim, rimA * 0.8); ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.ellipse(q[0] + ox, q[1], w * 0.2 * (1 + kn.k), w * 0.3 * (1 + kn.k), p.a, -0.6, 1.2); ctx.stroke();
+    }
+  });
+
   // śnieg na gałęziach
   if (look.snow) {
     ctx.strokeStyle = rgba(pal.snow, 0.9);
@@ -379,38 +402,35 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
       y: iu * iu * p.start[1] + 2 * iu * u * p.ctrl[1] + u * u * p.end[1], a: p.a
     };
   };
-  const maturity = Math.max(0, Math.min(1, (tree.P - 22) / 50));
-  if (maturity > 0 && tree.leaves.length) {
-    const groups = new Map();
-    tree.leaves.forEach((l) => { if (!groups.has(l.seg)) groups.set(l.seg, []); groups.get(l.seg).push(l); });
-    const leafPx = tree.genes.leafLen * ppu;
-    const back = mix(cols[0], "#0e1420", 0.35);
-    groups.forEach((ls, segId) => {
-      const sp = segPoint(segId, 0.7); if (!sp) return;
-      const q = M(sp.x, sp.y);
-      const r = leafPx * (0.9 + Math.sqrt(ls.length) * 0.7) * maturity;
-      if (r < 2) return;
-      const col = look.season === "autumn" ? cols[Math.min(cols.length - 1, Math.floor((ls[0].tone * 0.6 + ls[0].keep * 0.45) * cols.length))] : cols[ls[0].tone < 0.5 ? 0 : 1];
-      const shade = mix(col, "#2b2a24", 0.3);
-      const g = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], r);
-      g.addColorStop(0, rgba(shade, 0.55)); g.addColorStop(0.55, rgba(shade, 0.3)); g.addColorStop(1, rgba(shade, 0));
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q[0], q[1], r, 0, Math.PI * 2); ctx.fill();
-    });
-  }
+  // grupy liści: lekki cień pod grupą daje głębię, światło przechodzi między grupami
+  const leafPx = tree.genes.leafLen * ppu;
+  const groupsSeen = new Set();
+  const groupShade = Math.max(0, Math.min(1, (tree.P - 35) / 60));
+  ctx.fillStyle = night ? `rgba(5,8,16,${0.16 * groupShade})` : `rgba(40,45,30,${0.1 * groupShade})`;
+  tree.leaves.forEach((l) => {
+    const key = l.seg + ":" + l.t; if (groupsSeen.has(key)) return; groupsSeen.add(key);
+    const sp = segPoint(l.seg, l.t); if (!sp) return;
+    const q = M(sp.x, sp.y);
+    ctx.beginPath(); ctx.ellipse(q[0], q[1] + leafPx * 0.25, leafPx * 1.1 * l.grow, leafPx * 0.8 * l.grow, 0, 0, Math.PI * 2); ctx.fill();
+  });
   const drawn = [];
   tree.leaves.forEach((l) => {
-    const sp = segPoint(l.seg, l.t); if (!sp || l.size <= 0.0003) return;
-    const q = M(sp.x, sp.y);
+    const sp = segPoint(l.seg, l.t); if (!sp || l.grow <= 0.02) return;
+    const size = Math.max(2.4, l.size * ppu * l.grow);
+    const q0 = M(sp.x, sp.y);
+    const q = [q0[0] + l.dx * size * 1.1, q0[1] + l.dy * size * 0.9];
     const flutter = Math.sin(t * 1.7 + l.tone * 20) * 0.08 * windNow;
-    const ang = sp.a + l.side * l.off + flutter;
+    const ang = sp.a + l.spread + flutter;
     const col = look.season === "autumn"
       ? cols[Math.min(cols.length - 1, Math.floor(Math.min(0.999, l.tone * 0.6 + l.keep * 0.45) * cols.length))]
       : cols[Math.floor(l.tone * cols.length) % cols.length];
-    const size = Math.max(2.2, l.size * ppu);
-    ctx.globalAlpha = 0.92; ctx.fillStyle = col;
+    ctx.globalAlpha = 0.94; ctx.fillStyle = col;
     leafPath(ctx, q[0], q[1], ang, size, tree.genes.leafWide, tree.genes.leafPointy); ctx.fill();
-    if ((light.x - q[0]) * Math.sin(ang) > 0 || l.keep < 0.3) {
-      ctx.globalAlpha = night ? 0.22 : 0.3; ctx.fillStyle = night ? "#dbe6f7" : "#fff0cc";
+    // środkowy nerw i jaśniejsza strona od światła
+    ctx.globalAlpha = 0.25; ctx.strokeStyle = night ? "#0b0f18" : "#2f3a1e"; ctx.lineWidth = 0.6;
+    ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[0] + Math.sin(ang) * size * 0.85, q[1] - Math.cos(ang) * size * 0.85); ctx.stroke();
+    if ((light.x - q[0]) * Math.sin(ang) > 0) {
+      ctx.globalAlpha = night ? 0.2 : 0.28; ctx.fillStyle = night ? "#dbe6f7" : "#fff0cc";
       leafPath(ctx, q[0], q[1], ang, size * 0.62, tree.genes.leafWide * 0.5, tree.genes.leafPointy); ctx.fill();
     }
     drawn.push({ q, ang, size, l });
