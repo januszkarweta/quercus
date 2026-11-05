@@ -479,3 +479,5 @@ Próbki: https://claude.ai/artifact/5j5xuxZHZYYM7XB9n96eMx
 - jesienią większość liści zmienia kolor (im później jesienią, tym więcej), pojedyncze zostają zielone.
 
 **Równowaga konarów:** konary rozkładają się mniej więcej po równo na obie strony (nowy konar wyrasta tam, gdzie żywych konarów jest mniej). Wiatr nie zabiera gałęzi jednej stronie, tylko delikatnie wydłuża konary po stronie zawietrznej i lekko pochyla pień; pochylone drzewo równoważy się dłuższymi konarami po przeciwnej stronie.
+
+**Korzenie dorosłego drzewa:** wachlarz 5–9 głównych korzeni rozchodzących się na obie strony (boczne najpierw płytko i szeroko, środkowe prosto w głąb). Z wiekiem dochodzą kolejne, korzenie są grubsze przy nasadzie, a ich zasięg rośnie razem z drzewem, więc dorosłe drzewo stoi w gruncie solidnie.

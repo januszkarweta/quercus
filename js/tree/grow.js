@@ -397,7 +397,7 @@ export function growTree(genome, steps, opts = {}) {
       if (el === "silent") target *= 0.85;
       angle += (target - angle) * o.pull + (r() - 0.5) * 0.3;
       let len = o.baseLen * (0.85 + r() * 0.3) * (o.depth === 0 ? 0.75 + Math.min(j, 8) * 0.07 : Math.pow(0.92, j));
-      len *= 0.45 + 0.55 * smooth((Pv - 5) / 80);         // korzenie rosną w proporcji do drzewa
+      len *= 0.45 + 0.55 * smooth((Pv - 5) / 80) + 0.35 * smooth((Pv - 80) / 200); // rosną z drzewem, dorosłe szeroko
       if (el === "stone" || el === "wind") len *= 1.12;
       if (el === "silent") len *= 1.1;
       const seg = { id: rootId++, parent: prev ? prev.id : -1, depth: o.depth, angle, len, birth, el, entryId: step && step.entryId, day: step && step.day, kids: [], bend: (r() - 0.5) * 0.5 };
@@ -412,24 +412,27 @@ export function growTree(genome, steps, opts = {}) {
       birth += o.depth === 0 ? 1.4 + 0.35 * j : 2.2 + 0.6 * j;
     }
   }
+  // Główne korzenie rozchodzą się wachlarzem na obie strony; z wiekiem dochodzą kolejne,
+  // więc dorosłe drzewo stoi w gruncie szeroko i solidnie. Środkowe korzenie schodzą głębiej.
   if (R >= 1.5) {
-    const stoneSoFar = count.stone;
-    const mains = Math.min(6, 3 + (G.shape === "round" || G.shape === "spreading" ? 1 : 0) + (stoneSoFar >= 4 ? 1 : 0) + (count.wind >= 6 ? 1 : 0));
-    const rr = rng(hashSeed(genome, "rootplan"));
-    const sides = [];
-    for (let i = 0; i < mains; i++) sides.push(i === 0 ? (rr() < 0.5 ? -1 : 1) : (i % 2 ? -sides[0] : sides[0]));
+    const slots = [-1.3, 1.25, -0.7, 0.75, 0.05, -1.05, 1.0, -0.35, 0.4];
+    const births = [1.5, 3, 6, 10, 16, 26, 42, 64, 95];
+    const mains = Math.min(slots.length, 5 + (G.shape === "round" || G.shape === "spreading" ? 1 : 0) + (count.stone >= 4 ? 1 : 0) + (count.wind >= 6 ? 1 : 0) + (Pv > 120 ? 1 : 0));
+    const flip = G.sideStart;
     for (let i = 0; i < mains; i++) {
-      const side = sides[i];
-      const tap = i === 0 && G.shape === "slender";
-      // najpierw płytko i na boki, potem łagodnie w głąb
-      const start = tap ? 0.2 * side : side * (1.25 + rr() * 0.2) * G.rootSpread;
-      const target = tap ? 0.05 : side * (0.45 + rr() * 0.45) / deep;
+      const rr = rng(hashSeed(genome, "rootmain", i));
+      const slot = slots[i] * flip * (0.92 + rr() * 0.16);
+      const side = Math.sign(slot) || 1;
+      const central = Math.abs(slot) < 0.5;
+      // boczne: najpierw płytko i szeroko, potem łagodnie w głąb; środkowe: prosto w głąb
+      const start = central ? slot : slot * G.rootSpread;
+      const target = central ? slot * 0.6 : (slot * (0.42 + rr() * 0.2)) / deep;
+      const before = roots.length;
       rootAxis({
-        parent: null, depth: 0, birth: 1.5 + i * 2.6, side, angle: clamp(start, -1.5, 1.5), target: clamp(target, -1.3, 1.3), pull: 0.22,
-        maxSegs: 16, baseLen: 0.02 * (0.85 + rr() * 0.35) * (i === 0 ? 1.15 : 1) * (tap ? deep : 1), key: "R" + i, startX: side * baseHalf * (0.4 + rr() * 0.6)
+        parent: null, depth: 0, birth: births[i], side, angle: clamp(start, -1.5, 1.5), target: clamp(target, -1.35, 1.35), pull: central ? 0.3 : 0.2,
+        maxSegs: 18, baseLen: 0.02 * (0.85 + rr() * 0.3) * (central ? deep * 0.9 : 1), key: "R" + i
       });
-      // zapamiętaj przesunięcie startu (nasada pnia)
-      roots.filter((s) => s.parent === -1 && s.startX == null).forEach((s) => { s.startX = side * baseHalf * (0.3 + rr() * 0.6); });
+      if (roots.length > before) roots[before].startX = baseHalf * (slot / 1.3) * 0.85;
     }
   }
   const rById = new Map(roots.map((s) => [s.id, s]));
@@ -438,7 +441,7 @@ export function growTree(genome, steps, opts = {}) {
     let n = s.grown;
     s.kids.forEach((k) => { n += rById.get(k).n || 0; });
     s.n = n;
-    s.w = 0.0011 * Math.pow(Math.max(1, n), 0.55) * (1 + (strength - 1) * 0.8);
+    s.w = 0.0014 * Math.pow(Math.max(1, n), 0.55) * (1 + (strength - 1) * 0.8) * (s.depth === 0 && s.parent === -1 ? 1.5 : 1);
   }
   roots.forEach((s) => {
     const p = s.parent >= 0 ? rById.get(s.parent) : null;
