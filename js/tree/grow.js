@@ -247,14 +247,19 @@ export function growTree(genome, steps, opts = {}) {
         });
       });
     }
-    // gałązki na przewodniku powyżej ostatniego konara
-    const topLimbJ = limbs.length ? Math.max(...limbs.map((l) => l.jAttach)) : 1;
+    // gałązki na pniu: liście nigdy nie rosną wprost z pnia, tylko z gałązek.
+    // U młodej roślinki gałązki są krótkie i rosną naprzemiennie; z wiekiem dolne opadają.
+    const topLimbJ = limbs.length ? Math.max(...limbs.map((l) => l.jAttach)) : 0;
     trunk.forEach((t) => {
-      if (t.j <= topLimbJ || t.birth < STAGES.BRANCH) return;
+      if (t.j < 1) return;
+      const age = Pv - t.birth;
+      if (limbs.length && t.j <= topLimbJ && age > 26) return;   // dolne gałązki obumarły
+      if (age > 45) return;
       const rr = rng(hashSeed(genome, "twig", t.j));
-      if (rr() > 0.45) return;
-      const sd = rr() < 0.5 ? -1 : 1;
-      axis({ parentSeg: t, depth: 2, birth: t.birth + 1.5, side: sd, angle: t.angle + sd * (0.55 + rr() * 0.3), maxSegs: 3, baseLen: 0.014, key: "W" + t.j, curve: (q, a) => a - sd * 0.04, gap: (q) => 2 + q });
+      const young = t.birth < STAGES.BRANCH;
+      if (!young && rr() > 0.5) return;
+      const sd = young ? (t.j % 2 === 0 ? 1 : -1) * G.sideStart : (rr() < 0.5 ? -1 : 1);
+      axis({ parentSeg: t, depth: 2, birth: t.birth + 0.8, side: sd, angle: t.angle + sd * (0.6 + rr() * 0.35), maxSegs: young ? 1 : 3, baseLen: young ? 0.016 : 0.018, key: "W" + t.j, curve: (q, a) => a - sd * 0.05, gap: (q) => 2 + q });
     });
   }
 
@@ -310,9 +315,9 @@ export function growTree(genome, steps, opts = {}) {
     const big = 0.8 + r() * 0.6;
     for (let i = 0; i < n; i++) {
       leaves.push({
-        seg: seg.id, t: u, spread: (r() - 0.5) * 2.6,
-        dx: (r() - 0.5) * 0.9, dy: (r() - 0.5) * 0.9,
-        size: G.leafLen * big * sizeK * (0.65 + r() * 0.7) * (1 + lush * 0.15),
+        seg: seg.id, t: u, spread: (r() - 0.5) * 2.2,
+        stalk: 0.15 + r() * 0.35,   // ogonek liścia: liść zawsze wyrasta z gałązki
+        size: G.leafLen * big * sizeK * (0.65 + r() * 0.7) * (1 + lush * 0.15) * (0.4 + 0.6 * smooth((Pv - 7) / 45)),
         keep: r(), tone: r(), birth: seg.birth + 0.8 + r() * 1.5
       });
     }
@@ -322,8 +327,8 @@ export function growTree(genome, steps, opts = {}) {
       const age = Pv - s.birth;
       const tip = !s.kids.some((k) => byId.get(k).depth === s.depth);
       if (s.depth === 0) {
-        // młoda roślinka: liście wzdłuż górnej części pnia; później tylko przy wierzchołku
-        if (age < 22 && s.j >= 1) cluster(s, 0.8, Pv < STAGES.BRANCH ? 0.85 : 0.75, "t" + s.id);
+        // pień: liście tylko na samym wierzchołku przewodnika (pąk szczytowy), nigdy wzdłuż pnia
+        if (tip && age < 12) cluster(s, 1, 0.7, "t" + s.id);
         return;
       }
       if (s.depth === 1 && age > 45 && !tip) return;        // stare części konarów łysieją od środka

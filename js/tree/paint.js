@@ -418,9 +418,13 @@ export function paintScene(ctx, W, H, tree, look, extras = {}) {
     const sp = segPoint(l.seg, l.t); if (!sp || l.grow <= 0.02) return;
     const size = Math.max(2.4, l.size * ppu * l.grow);
     const q0 = M(sp.x, sp.y);
-    const q = [q0[0] + l.dx * size * 1.1, q0[1] + l.dy * size * 0.9];
     const flutter = Math.sin(t * 1.7 + l.tone * 20) * 0.08 * windNow;
     const ang = sp.a + l.spread + flutter;
+    // ogonek: krótka łodyżka od gałązki do nasady liścia
+    const st = size * l.stalk;
+    const q = [q0[0] + Math.sin(ang) * st, q0[1] - Math.cos(ang) * st];
+    ctx.globalAlpha = 0.9; ctx.strokeStyle = pal.trunk; ctx.lineWidth = Math.max(0.6, size * 0.06);
+    ctx.beginPath(); ctx.moveTo(q0[0], q0[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
     const col = look.season === "autumn"
       ? cols[Math.min(cols.length - 1, Math.floor(Math.min(0.999, l.tone * 0.6 + l.keep * 0.45) * cols.length))]
       : cols[Math.floor(l.tone * cols.length) % cols.length];
